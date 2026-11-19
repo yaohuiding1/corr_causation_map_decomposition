@@ -1,4 +1,4 @@
-# A Lyapunov factorization of the map from causal to correlational brain connectivity at rest: intrinsic dynamics, temporal coloring, and spatial covariance
+# A triple-operator decomposition of a map from causal to correlational brain connectivity at rest: intrinsic dynamics, temporal coloring, and spatial covariance
 
 **Author:** Yaohui Ding, Ph.D.
 
