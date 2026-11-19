@@ -1,0 +1,845 @@
+\documentclass[12pt]{article}
+
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=2.54cm,right=2.54cm,marginparwidth=1.75cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{lineno}
+% External equation and appendix references remain clickable in the standalone appendix.
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{comment}
+\usepackage{xcolor}
+\usepackage{natbib}
+\usepackage{xr-hyper}
+\externaldocument[A-]{build/appendix_a_cov_formula_dyad}[appendix_a_cov_formula_dyad.pdf]
+
+% The bibliography is printed only in the combined manuscript, so standalone
+% appendix citations have labels but no local hyperlink destinations.
+\makeatletter
+\def\hyper@natlinkstart#1{}
+\def\hyper@natlinkend{}
+\def\hyper@natlinkbreak#1#2{#1}
+\makeatother
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+% Reduced space above subsection headings (the article default is 3.25ex plus 1ex minus .2ex); format and space below are the defaults.
+\makeatletter
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}{-1.5ex plus -.5ex minus -.2ex}{1.5ex plus .2ex}{\normalfont\large\bfseries}}
+\makeatother
+
+\newcommand{\vc}{\operatorname{vec}}
+\newcommand{\vech}{\operatorname{vech}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Gap}{\operatorname{Gap}}
+\newcommand{\RL}{\mathbf{R}_{\boldsymbol{\Lambda}}}
+
+% This appendix is embedded into the main manuscript via \includepdf, whose
+% own consolidated References section is the single printed bibliography
+% for the whole document. This file therefore carries no
+% \bibliographystyle/\bibliography call. Its \citep/\citet keys resolve
+% through bibcites.tex (loaded below).
+
+% Citation labels shared with the manuscript.
+\AtBeginDocument{\input{bibcites}}
+\begin{document}
+\pagestyle{empty}
+\linenumbers
+
+\section*{Appendix B: Deriving the Covariance Formula and A Lyapunov Equation for $n\times n$ Networks}
+\renewcommand{\theequation}{B-\arabic{equation}}
+\setcounter{equation}{0}
+
+% =====================================================================
+\subsection*{Setting}
+% =====================================================================
+
+Let $\mathbf A$ be a real Hurwitz-stable $n\times n$ matrix and consider
+\begin{equation}
+    \dot{\boldsymbol x}=\mathbf A\boldsymbol x+\boldsymbol w,
+    \qquad
+    \mathbf S_w(\omega)=\alpha|\omega|^{-\beta}\boldsymbol{\Sigma}_w,
+    \label{eq:sde}
+\end{equation}
+where $\alpha>0$, $-1<\beta<1$, and the constant spatial noise factor satisfies
+$\boldsymbol{\Sigma}_w=\boldsymbol{\Sigma}_w^\top\succeq0$.
+The isotropic case is $\boldsymbol{\Sigma}_w=\mathbf I$.
+As in \hyperref[A-eq:D_Sigma]{Appendix~A}, a power law over the whole frequency axis is understood as generalized noise;
+Gaussianity is not needed for these covariance calculations.
+We write $\mathcal U$ for the set of real stable matrices and
+$\mathbf R(\omega;\mathbf A)=(i\omega\mathbf I-\mathbf A)^{-1}$ for the resolvent.
+With Fourier kernel $e^{-i\omega t}$, the state equation gives
+$\hat{\boldsymbol x}=\mathbf R\hat{\boldsymbol w}$, hence
+$\mathbf S_x=\mathbf R\mathbf S_w\mathbf R^\dagger$.
+The inverse Fourier transform at zero lag, with normalization $1/(2\pi)$, gives the neuronal covariance
+\begin{equation}
+    \boldsymbol{\Sigma}(\mathbf{A},\beta)=\frac{\alpha}{2\pi}\int_{-\infty}^{\infty}|\omega|^{-\beta}\,
+    \mathbf{R}(\omega;\mathbf{A})\,\boldsymbol{\Sigma}_w\,\mathbf{R}(\omega;\mathbf{A})^{\dagger}\,d\omega ,
+    \label{eq:Sigma_Sw}
+\end{equation}
+For $n=2$ and $\boldsymbol{\Sigma}_w=\mathbf I$, this is \eqref{A-eq:D_Sigma}.
+Throughout this appendix, $\boldsymbol{\Sigma}$ denotes neuronal covariance.
+For a fixed real, frequency-independent observation map $\boldsymbol y=\mathbf H\boldsymbol x$ without observation noise,
+the observed covariance is $\boldsymbol{\Sigma}_y=\mathbf H\boldsymbol{\Sigma}\mathbf H^\top$;
+this relation requires no invertibility of $\mathbf H$.
+
+% =====================================================================
+\subsection*{Reducing the matrix-valued complex integral in \ref{eq:Sigma_Sw} to a series of scalar integrals}
+% =====================================================================
+
+Let $\mathbf{A}\in\mathcal{U}$ be diagonalizable, $\mathbf{A}=\mathbf{P}\boldsymbol{\Lambda}\mathbf{P}^{-1}$, where the columns of the
+invertible complex matrix $\mathbf{P}$ are eigenvectors of $\mathbf{A}$ and $\boldsymbol{\Lambda}=\operatorname{diag}(\lambda_1,\dots,\lambda_n)$
+holds the eigenvalues, each with $\operatorname{Re}\lambda_k<0$. The resolvent inherits this factorization. Since $\mathbf{I}=\mathbf{P}\mathbf{P}^{-1}$, multiplying by the scalar $i\omega$ gives
+$i\omega\mathbf{I}=\mathbf{P}\,(i\omega\mathbf{I})\,\mathbf{P}^{-1}$, and subtracting $\mathbf{A}=\mathbf{P}\boldsymbol{\Lambda}\mathbf{P}^{-1}$ from it gives
+\begin{equation}
+    i\omega\mathbf{I}-\mathbf{A}=\mathbf{P}\,(i\omega\mathbf{I})\,\mathbf{P}^{-1}-\mathbf{P}\boldsymbol{\Lambda}\mathbf{P}^{-1}
+    =\mathbf{P}\,(i\omega\mathbf{I}-\boldsymbol{\Lambda})\,\mathbf{P}^{-1}.
+    \label{eq:resolvent_similarity}
+\end{equation}
+The diagonal matrix $i\omega\mathbf{I}-\boldsymbol{\Lambda}$ carries the entries $i\omega-\lambda_k$, and none of them vanishes, because
+$\operatorname{Re}(i\omega-\lambda_k)=-\operatorname{Re}\lambda_k>0$ for real $\omega$. It is therefore invertible, as is $\mathbf{P}$. Since the
+inverse of a product of invertible matrices is the product of the inverses in reverse order, the resolvent factorizes as
+\begin{equation}
+    \mathbf{R}(\omega;\mathbf{A})=(i\omega\mathbf{I}-\mathbf{A})^{-1}
+    =\mathbf{P}\,(i\omega\mathbf{I}-\boldsymbol{\Lambda})^{-1}\mathbf{P}^{-1}
+    =\mathbf{P}\,\RL(\omega)\,\mathbf{P}^{-1}.
+    \label{eq:R_eig}
+\end{equation}
+where $\RL(\omega):=\mathbf{R}(\omega;\boldsymbol{\Lambda})$ is the resolvent of $\boldsymbol{\Lambda}$:
+\begin{equation}
+    \RL(\omega)=(i\omega\mathbf{I}-\boldsymbol{\Lambda})^{-1}
+    =\operatorname{diag}\Bigl(\frac{1}{i\omega-\lambda_1},\dots,\frac{1}{i\omega-\lambda_n}\Bigr).
+    \label{eq:RL_eig}
+\end{equation}
+The diagonal form in \eqref{eq:RL_eig} holds because a diagonal matrix is inverted entry by entry.
+
+Taking the conjugate transpose of \eqref{eq:R_eig} reverses the order of the three factors and applies the operation to each,
+\begin{equation}
+    \mathbf{R}^{\dagger}=\bigl(\mathbf{P}\,\RL\,\mathbf{P}^{-1}\bigr)^{\dagger}
+    =(\mathbf{P}^{-1})^{\dagger}\,\RL^{\dagger}\,\mathbf{P}^{\dagger}
+    =\mathbf{P}^{-\dagger}\,\RL^{\dagger}\,\mathbf{P}^{\dagger}.
+    \label{eq:Rdag_eig}
+\end{equation}
+Here $\mathbf{P}^{-\dagger}:=(\mathbf{P}^{-1})^{\dagger}$.
+The conjugate transpose of a diagonal matrix is diagonal with its entries conjugated, and since $\omega$ is real the conjugate of
+$i\omega-\lambda_l$ is $-i\omega-\bar\lambda_l$, so
+\begin{equation}
+    \RL^{\dagger}=\operatorname{diag}\Bigl(\frac{1}{-i\omega-\bar\lambda_1},\dots,\frac{1}{-i\omega-\bar\lambda_n}\Bigr).
+    \label{eq:RLdag_eig}
+\end{equation}
+Substituting both factorizations into the integrand of \eqref{eq:Sigma_Sw} gives a product of seven factors, which regroups as
+\begin{equation}
+    \mathbf{R}\boldsymbol{\Sigma}_w\mathbf{R}^{\dagger}
+    =\bigl(\mathbf{P}\,\RL\,\mathbf{P}^{-1}\bigr)\,\boldsymbol{\Sigma}_w\,\bigl(\mathbf{P}^{-\dagger}\,\RL^{\dagger}\,\mathbf{P}^{\dagger}\bigr)
+    =\mathbf{P}\,\RL\,\underbrace{\mathbf{P}^{-1}\,\boldsymbol{\Sigma}_w\,\mathbf{P}^{-\dagger}}_{=:\;\mathbf{M}_w}\,\RL^{\dagger}\,\mathbf{P}^{\dagger} .
+    \label{eq:RRdag_regroup}
+\end{equation}
+The three middle factors define the noise spectrum's spatial covariance in eigenvector coordinates.
+Even for $\boldsymbol{\Sigma}_w=\mathbf I$, the product $\mathbf P^{-1}\mathbf P^{-\dagger}$ is generally not the identity:
+$\mathbf P^{-\dagger}$ is the conjugate transpose of $\mathbf P^{-1}$, not its inverse.
+Thus isotropic input in the original coordinates need not be isotropic in eigenvector coordinates. Hence
+\begin{equation}
+    \mathbf{R}\boldsymbol{\Sigma}_w\mathbf{R}^{\dagger}
+    =\mathbf{P}\RL\mathbf{P}^{-1}\boldsymbol{\Sigma}_w\mathbf{P}^{-\dagger}\RL^{\dagger}\mathbf{P}^{\dagger}
+    =\mathbf{P}\bigl(\RL\mathbf{M}_w\RL^{\dagger}\bigr)\mathbf{P}^{\dagger}.
+    \label{eq:RRdag_eig}
+\end{equation}
+Here $\mathbf{M}_w:=\mathbf{P}^{-1}\boldsymbol{\Sigma}_w\mathbf{P}^{-\dagger}$. The matrix $\mathbf{M}_w$ does not depend on $\omega$, since $\boldsymbol{\Sigma}_w$, $\mathbf{P}$ and $\mathbf{P}^{-1}$ are all constant.
+The frequency therefore enters the integrand only through the two diagonal factors $\RL$ and $\RL^{\dagger}$. To read off the entries of the inner triple product, abbreviate the two diagonal factors as
+\begin{equation}
+    \RL=\operatorname{diag}(r_1,\dots,r_n),
+    \qquad r_k=\frac{1}{i\omega-\lambda_k}.
+    \label{eq:RL_entries}
+\end{equation}
+\begin{equation}
+    \RL^{\dagger}=\operatorname{diag}(s_1,\dots,s_n),
+    \qquad s_l=\frac{1}{-i\omega-\bar\lambda_l}.
+    \label{eq:RLdag_entries}
+\end{equation}
+A diagonal matrix has the entries $(\RL)_{ka}=r_k\delta_{ka}$ and $(\RL^{\dagger})_{bl}=s_l\delta_{bl}$, where $\delta$ is the Kronecker delta.
+The $(k,l)$ entry of the triple product is then the double sum
+\begin{equation}
+    \begin{aligned}
+        \bigl(\RL\mathbf{M}_w\RL^{\dagger}\bigr)_{kl}
+        &=\sum_{a=1}^{n}\sum_{b=1}^{n}(\RL)_{ka}\,(M_w)_{ab}\,(\RL^{\dagger})_{bl}\\
+        &=\sum_{a=1}^{n}\sum_{b=1}^{n}r_k\,\delta_{ka}\,(M_w)_{ab}\,s_l\,\delta_{bl}
+        =r_k\,(M_w)_{kl}\,s_l .
+    \end{aligned}
+    \label{eq:triple_product_entry}
+\end{equation}
+because $\delta_{ka}$ is nonzero only when $a=k$ and $\delta_{bl}$ is nonzero only when $b=l$. Multiplying by a diagonal
+matrix on the left scales the rows and multiplying by one on the right scales the columns, so each entry of $\mathbf{M}_w$ is
+simply rescaled. Collecting the two frequency-dependent factors into
+\begin{equation}
+    g_{kl}(\omega):=\frac{1}{(i\omega-\lambda_k)(-i\omega-\bar\lambda_l)} ,
+    \label{eq:g_def}
+\end{equation}
+which is the product $r_ks_l$ of the $k$th diagonal entry of $\RL$ and the $l$th diagonal entry of $\RL^{\dagger}$. Thus
+\begin{equation}
+    \bigl(\RL\mathbf{M}_w\RL^{\dagger}\bigr)_{kl}=(M_w)_{kl}\,g_{kl}(\omega).
+    \label{eq:triple_product_g}
+\end{equation}
+
+Substituting \eqref{eq:RRdag_eig} into \eqref{eq:Sigma_Sw} gives
+\begin{equation}
+    \begin{aligned}
+    \boldsymbol{\Sigma}(\mathbf{A},\beta)
+    &=\frac{\alpha}{2\pi}\int_{-\infty}^{\infty}|\omega|^{-\beta}\,
+    \mathbf{P}\bigl(\RL\mathbf{M}_w\RL^{\dagger}\bigr)\mathbf{P}^{\dagger}\,d\omega \\
+    &=\frac{\alpha}{2\pi}\,\mathbf{P}
+    \Bigl[\int_{-\infty}^{\infty}|\omega|^{-\beta}\,\RL\mathbf{M}_w\RL^{\dagger}\,d\omega\Bigr]\mathbf{P}^{\dagger}.
+    \end{aligned}
+    \label{eq:Sigma_factor_P}
+\end{equation}
+A matrix integral is taken entry by entry, and $\mathbf{P}$ and $\mathbf{P}^{\dagger}$ do not depend on $\omega$, so both pass
+outside the integral.
+Substituting \eqref{eq:triple_product_g} into \eqref{eq:Sigma_factor_P}, the $(k,l)$ entry of the bracket is
+\begin{equation}
+    \int_{-\infty}^{\infty}|\omega|^{-\beta}\,(M_w)_{kl}\,g_{kl}(\omega)\,d\omega
+    =(M_w)_{kl}\int_{-\infty}^{\infty}|\omega|^{-\beta}g_{kl}(\omega)\,d\omega.
+    \label{eq:entry_integral}
+\end{equation}
+since $(M_w)_{kl}$ is a constant that passes through the integral. A matrix whose $(k,l)$ entry is the product of the $(k,l)$
+entries of two matrices is their entrywise product, so the bracket term in \eqref{eq:Sigma_factor_P} equals $\mathbf{M}_w\circ\mathbf{Q}$ and
+\begin{equation}
+\boxed{\begin{aligned}
+    \boldsymbol{\Sigma}(\mathbf{A},\beta)
+    &=\frac{\alpha}{2\pi}\,\mathbf{P}\,(\mathbf{M}_w\circ\mathbf{Q})\,\mathbf{P}^{\dagger},\\
+    q_{kl}
+    &:=\int_{-\infty}^{\infty}|\omega|^{-\beta}g_{kl}(\omega)\,d\omega
+    =\int_{-\infty}^{\infty}
+    \frac{|\omega|^{-\beta}}{(i\omega-\lambda_k)(-i\omega-\bar\lambda_l)}\,d\omega .
+\end{aligned}}
+    \label{eq:Sigma_hadamard}
+\end{equation}
+where $\mathbf{Q}$ is the $n\times n$ matrix with entries $q_{kl}$ and $\circ$ denotes the entrywise product.
+
+Each $g_{kl}$ is integrable against $|\omega|^{-\beta}$. Neither factor of its denominator vanishes for real $\omega$, because
+$i\omega-\lambda_k=0$ would require $\operatorname{Re}\lambda_k=0$ and $-i\omega-\bar\lambda_l=0$ would require
+$\operatorname{Re}\lambda_l=0$, and stability excludes both. The function $g_{kl}$ is therefore continuous on $\R$, and so is
+$(1+\omega^2)\,|g_{kl}(\omega)|$. As $|\omega|\to\infty$ the two factors of the denominator satisfy
+$|i\omega-\lambda_k|/|\omega|\to1$ and $|{-i\omega}-\bar\lambda_l|/|\omega|\to1$, so $\omega^2|g_{kl}(\omega)|\to1$ and hence
+$(1+\omega^2)\,|g_{kl}(\omega)|\to1$. A continuous function on $\R$ with a finite limit at both ends is bounded, so there is a
+constant $C$ with $|g_{kl}(\omega)|\le C/(1+\omega^2)$ for every real $\omega$. The comparison function
+$|\omega|^{-\beta}/(1+\omega^2)$ is integrable on $\R$ for $-1<\beta<1$, since it behaves like $|\omega|^{-\beta}$ near the origin,
+where $-\beta>-1$, and like $|\omega|^{-2-\beta}$ for large $|\omega|$, where $2+\beta>1$. Each integral of $|\omega|^{-\beta}g_{kl}$
+therefore converges absolutely.
+
+The noise covariance enters only through $\mathbf{M}_w$, and the scalar integrals $q_{kl}$ depend only on the eigenvalues of
+$\mathbf{A}$ and on $\beta$.
+The entrywise convergence proved above also establishes convergence of the original covariance integral for diagonalizable
+$\mathbf A$. Its value is real because $\mathbf R(-\omega)=\overline{\mathbf R(\omega)}$ and opposite frequencies contribute
+complex conjugates. Moreover, $\mathbf R\boldsymbol{\Sigma}_w\mathbf R^\dagger$ is Hermitian positive semidefinite.
+Thus $\boldsymbol{\Sigma}$ is real symmetric positive semidefinite; it is positive definite if
+$\boldsymbol{\Sigma}_w\succ0$, since $\mathbf R(\omega)$ is invertible for every real $\omega$.
+
+% =====================================================================
+\subsection*{Evaluating the scalar integrals in \ref{eq:Sigma_hadamard}}
+
+% =====================================================================
+
+Write $\lambda:=\lambda_k$ and $\mu:=\bar\lambda_l$, both with negative real part. We have
+\begin{equation}
+    (i\omega-\lambda)(-i\omega-\lambda)=\omega^2+\lambda^2
+    \label{eq:lambda_denominator}
+\end{equation}
+and
+\begin{equation}
+    (-i\omega-\mu)(i\omega-\mu)=\omega^2+\mu^2.
+    \label{eq:mu_denominator}
+\end{equation}
+Multiplying the numerator and denominator of $g_{kl}$ in \eqref{eq:g_def} by $(-i\omega-\lambda)(i\omega-\mu)$ gives
+\begin{equation}
+    g_{kl}(\omega)=\frac{(-i\omega-\lambda)(i\omega-\mu)}{(\omega^2+\lambda^2)(\omega^2+\mu^2)}
+    =\frac{\omega^2+\lambda\mu+i\omega(\mu-\lambda)}{(\omega^2+\lambda^2)(\omega^2+\mu^2)},
+    \label{eq:g_rational}
+\end{equation}
+The term with $i\omega(\mu-\lambda)$ is odd in $\omega$. Multiplied by $|\omega|^{-\beta}$, it is absolutely integrable, since it is
+$O(|\omega|^{1-\beta})$ near $\omega=0$, where the denominator is $\lambda^2\mu^2\neq0$, and $O(|\omega|^{-3-\beta})$ for large
+$|\omega|$. Its integral therefore vanishes, leaving
+\begin{equation}
+    \begin{aligned}
+    q_{kl}
+    &=\int_{-\infty}^{\infty}|\omega|^{-\beta}g_{kl}(\omega)\,d\omega\\
+    &=\int_{-\infty}^{\infty}|\omega|^{-\beta}\,
+    \frac{\omega^2+\lambda\mu}{(\omega^2+\lambda^2)(\omega^2+\mu^2)}\,d\omega\\
+    &=\frac{1}{\lambda+\mu}\int_{-\infty}^{\infty}|\omega|^{-\beta}
+    \Bigl[\frac{\lambda}{\omega^2+\lambda^2}+\frac{\mu}{\omega^2+\mu^2}\Bigr]d\omega.
+    \end{aligned}
+    \label{eq:q_reduced}
+\end{equation}
+The sum $\lambda+\mu=\lambda_k+\bar\lambda_l$ has negative real part, so it is nonzero, and
+\begin{equation}
+    \frac{\omega^2+\lambda\mu}{(\omega^2+\lambda^2)(\omega^2+\mu^2)}
+    =\frac{1}{\lambda+\mu}\Bigl[\frac{\lambda}{\omega^2+\lambda^2}+\frac{\mu}{\omega^2+\mu^2}\Bigr],
+    \label{eq:pf_general}
+\end{equation}
+Therefore, the integral in \eqref{eq:q_reduced} can be written equivalently as
+\begin{equation}
+    q_{kl}=\frac{\lambda I_\beta(\lambda)+\mu I_\beta(\mu)}{\lambda+\mu},
+    \qquad
+    I_\beta(c):=\int_{\mathbb R}\frac{|\omega|^{-\beta}}{\omega^2+c^2}\,d\omega.
+    \label{eq:q_two_integrals}
+\end{equation}
+For every complex $c$ with
+$\operatorname{Re}c<0$, the elementary integral \eqref{A-eq:D_elem} of Appendix~A, extended there to the left half-plane, gives
+\begin{equation}
+    \int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}}{c^2+\omega^2}\,d\omega
+    =\frac{\pi\,(-c)^{-1-\beta}}{\cos(\pi\beta/2)}.
+    \label{eq:Ibeta_eval}
+\end{equation}
+Here the power of $-c$, which lies in the right half-plane, is the principal power, and the integral converges absolutely. The numerators
+$\lambda$ and $\mu$ of \eqref{eq:q_two_integrals} lie in the left half-plane, whereas the integral returns a power of
+the right half-plane quantity $-c$. Reconciling the two introduces a sign, because writing $c=-(-c)$ turns the leading factor
+into a power of the same base $-c$,
+\begin{equation}
+    c\,(-c)^{-1-\beta}=-(-c)^{1}\,(-c)^{-1-\beta}=-(-c)^{-\beta} ,
+    \label{eq:power_sign}
+\end{equation}
+where the exponents add to $1+(-1-\beta)=-\beta$ because both powers use the same principal branch of the logarithm of $-c$.
+Applying this with $c=\lambda$ and $c=\mu$ to the two terms of \eqref{eq:q_two_integrals} therefore gives
+\begin{equation}
+\begin{aligned}
+    q_{kl}&=\int_{-\infty}^{\infty}|\omega|^{-\beta}\,
+    \frac{\omega^2+\lambda\mu}{(\omega^2+\lambda^2)(\omega^2+\mu^2)}\,d\omega\\
+    &=\frac{1}{\lambda+\mu}\int_{-\infty}^{\infty}|\omega|^{-\beta}
+    \Bigl[\frac{\lambda}{\omega^2+\lambda^2}+\frac{\mu}{\omega^2+\mu^2}\Bigr]d\omega\\
+    &=\frac{1}{\lambda+\mu}\Bigl[\frac{\pi\,\lambda\,(-\lambda)^{-1-\beta}}{\cos(\pi\beta/2)}+\frac{\pi\,\mu\,(-\mu)^{-1-\beta}}{\cos(\pi\beta/2)}\Bigr]\\
+    &=\frac{-\pi\bigl[(-\lambda)^{-\beta}+(-\mu)^{-\beta}\bigr]}{(\lambda+\mu)\cos(\pi\beta/2)}\\
+    &=\frac{\pi}{\cos(\pi\beta/2)}\cdot\frac{(-\lambda_k)^{-\beta}+(-\bar\lambda_l)^{-\beta}}{-(\lambda_k+\bar\lambda_l)} .
+\end{aligned}
+    \label{eq:q_closed}
+\end{equation}
+Both terms contribute the same factor $-1$, which is why it factors out of the bracket in the first line. The second line
+carries that factor into the denominator, since $-1/(\lambda+\mu)=1/\bigl(-(\lambda+\mu)\bigr)$, and restores
+$\lambda=\lambda_k$ and $\mu=\bar\lambda_l$. Every base in the result then has positive real part, because
+$\operatorname{Re}\lambda_k<0$ and $\operatorname{Re}\lambda_l<0$ give $\operatorname{Re}\bigl(-(\lambda_k+\bar\lambda_l)\bigr)>0$.
+Finally, the identity in \eqref{eq:pf_general} does not require $\lambda$ and $\mu$ to be distinct. When $\lambda=\mu$, both sides reduce directly to
+\begin{equation}
+    \frac{\omega^2+\lambda^2}{(\omega^2+\lambda^2)^2}
+    =\frac{1}{2\lambda}\Bigl[\frac{\lambda}{\omega^2+\lambda^2}+\frac{\lambda}{\omega^2+\lambda^2}\Bigr]
+    =\frac{1}{\omega^2+\lambda^2}.
+    \label{eq:pf_repeated}
+\end{equation}
+More generally, if $\lambda_k=\lambda_l$ is a repeated eigenvalue, then
+$\lambda_k+\bar\lambda_l=2\operatorname{Re}\lambda_k<0$.
+
+% =====================================================================
+\subsection*{The covariance formula satisfies a Lyapunov equation}
+% =====================================================================
+
+Substituting \eqref{eq:q_closed} into \eqref{eq:Sigma_hadamard} gives, for every diagonalizable $\mathbf{A}\in\mathcal{U}$,
+\begin{equation}
+    \boldsymbol{\Sigma}(\mathbf{A},\beta)=\frac{\alpha}{2\cos(\pi\beta/2)}\,\mathbf{P}\,
+    \Bigl[(M_w)_{kl}\,\frac{(-\lambda_k)^{-\beta}+(-\bar\lambda_l)^{-\beta}}{-(\lambda_k+\bar\lambda_l)}\Bigr]_{k,l=1}^{n}\,\mathbf{P}^{\dagger},
+    \label{eq:Sigma_closed_Sw}
+\end{equation}
+where $[x_{kl}]_{k,l=1}^n$ denotes the $n\times n$ matrix with entries $x_{kl}$. The right-hand side is real, since it equals
+$\boldsymbol{\Sigma}(\mathbf{A},\beta)$, although $\mathbf{P}$, $\mathbf{M}_w$ and the $\lambda_k$ may be complex. For the isotropic
+spectrum, $\boldsymbol{\Sigma}_w=\mathbf{I}$ gives $\mathbf{M}_w=\mathbf{M}:=\mathbf{P}^{-1}\mathbf{P}^{-\dagger}$, and \eqref{eq:Sigma_closed_Sw} becomes
+\begin{equation}
+    \boldsymbol{\Sigma}(\mathbf{A},\beta)=\frac{\alpha}{2\cos(\pi\beta/2)}\,\mathbf{P}\,
+    \Bigl[M_{kl}\,\frac{(-\lambda_k)^{-\beta}+(-\bar\lambda_l)^{-\beta}}{-(\lambda_k+\bar\lambda_l)}\Bigr]_{k,l=1}^{n}\,\mathbf{P}^{\dagger}.
+    \label{eq:Sigma_closed}
+\end{equation}
+
+\textbf{The Lyapunov operator $(\mathbf A\boldsymbol\Sigma+\boldsymbol\Sigma\mathbf A^\top)$ in the eigenbasis.}
+Because $\mathbf A=\mathbf P\boldsymbol\Lambda\mathbf P^{-1}$ and $\mathbf A$ is real,
+$\mathbf A^\top=\mathbf A^\dagger=\mathbf P^{-\dagger}\bar{\boldsymbol\Lambda}\mathbf P^\dagger$.
+Consequently,
+\begin{equation}
+\begin{aligned}
+    \mathbf P^{-1}(\mathbf A\boldsymbol\Sigma+\boldsymbol\Sigma\mathbf A^\top)\mathbf P^{-\dagger}
+    &=\mathbf P^{-1}\Bigl[(\mathbf P\boldsymbol\Lambda\mathbf P^{-1})\boldsymbol\Sigma
+      +\boldsymbol\Sigma(\mathbf P^{-\dagger}\bar{\boldsymbol\Lambda}\mathbf P^\dagger)\Bigr]\mathbf P^{-\dagger}\\
+    &=\mathbf P^{-1}\mathbf P\boldsymbol\Lambda\mathbf P^{-1}\boldsymbol\Sigma\mathbf P^{-\dagger}
+      +\mathbf P^{-1}\boldsymbol\Sigma\mathbf P^{-\dagger}\bar{\boldsymbol\Lambda}\mathbf P^\dagger\mathbf P^{-\dagger}\\
+    &=\boldsymbol\Lambda\mathbf P^{-1}\boldsymbol\Sigma\mathbf P^{-\dagger}
+      +\mathbf P^{-1}\boldsymbol\Sigma\mathbf P^{-\dagger}\bar{\boldsymbol\Lambda}\\
+    &=\boldsymbol\Lambda\tilde{\boldsymbol\Sigma}
+      +\tilde{\boldsymbol\Sigma}\bar{\boldsymbol\Lambda}.
+\end{aligned}
+    \label{eq:lyap_transform_eigenbasis}
+\end{equation}
+Multiplying \eqref{eq:Sigma_closed_Sw} by $\mathbf{P}^{-1}$ on the left and by $\mathbf{P}^{-\dagger}$ on the right, and using
+$\mathbf{P}^{\dagger}\mathbf{P}^{-\dagger}=(\mathbf{P}^{-1}\mathbf{P})^{\dagger}=\mathbf{I}$, we have
+$\tilde{\boldsymbol{\Sigma}}:=\mathbf{P}^{-1}\boldsymbol{\Sigma}\mathbf{P}^{-\dagger}$, whose $(k,l)$ entry is
+\begin{equation}
+    \tilde\Sigma_{kl}=\eta_\beta\,(M_w)_{kl}
+    \frac{(-\lambda_k)^{-\beta}+(-\bar\lambda_l)^{-\beta}}
+    {-(\lambda_k+\bar\lambda_l)},
+    \label{eq:Sigma_tilde_entries}
+\end{equation}
+where $\eta_\beta:=\alpha/\bigl(2\cos(\pi\beta/2)\bigr)$.
+The $(k,l)$ entry of $\boldsymbol\Lambda\tilde{\boldsymbol\Sigma}
++\tilde{\boldsymbol\Sigma}\bar{\boldsymbol\Lambda}$ is
+\begin{equation}
+\begin{aligned}
+    \bigl(\boldsymbol\Lambda\tilde{\boldsymbol\Sigma}
+      +\tilde{\boldsymbol\Sigma}\bar{\boldsymbol\Lambda}\bigr)_{kl}
+    &=(\lambda_k+\bar\lambda_l)\tilde\Sigma_{kl}\\
+    &=(\lambda_k+\bar\lambda_l)\eta_\beta(M_w)_{kl}
+      \frac{(-\lambda_k)^{-\beta}+(-\bar\lambda_l)^{-\beta}}
+      {-(\lambda_k+\bar\lambda_l)}\\
+    &=-\eta_\beta(M_w)_{kl}
+      \bigl[(-\lambda_k)^{-\beta}+(-\bar\lambda_l)^{-\beta}\bigr]\\
+    &=-\eta_\beta\Bigl[
+      (-\lambda_k)^{-\beta}(M_w)_{kl}
+      +(M_w)_{kl}(-\bar\lambda_l)^{-\beta}\Bigr].
+\end{aligned}
+    \label{eq:lyap_entrywise}
+\end{equation}
+Since $\operatorname{Re}(\lambda_k+\bar\lambda_l)<0$ by stability, every multiplier
+$\lambda_k+\bar\lambda_l$ is nonzero; hence the Lyapunov operator is invertible.
+Define
+\begin{equation*}
+    (-\boldsymbol\Lambda)^{-\beta}
+    :=\operatorname{diag}\bigl((-\lambda_1)^{-\beta},\dots,(-\lambda_n)^{-\beta}\bigr),
+    \qquad
+    (-\bar{\boldsymbol\Lambda})^{-\beta}
+    :=\operatorname{diag}\bigl((-\bar\lambda_1)^{-\beta},\dots,(-\bar\lambda_n)^{-\beta}\bigr).
+\end{equation*}
+Then
+\begin{equation}
+\begin{aligned}
+    (-\lambda_k)^{-\beta}(M_w)_{kl}
+    &=\bigl[(-\boldsymbol\Lambda)^{-\beta}\bigr]_{kk}(M_w)_{kl}\\
+    &=\bigl[(-\boldsymbol\Lambda)^{-\beta}\mathbf M_w\bigr]_{kl},
+\end{aligned}
+    \label{eq:left_power_entry}
+\end{equation}
+and
+\begin{equation}
+\begin{aligned}
+    (M_w)_{kl}(-\bar\lambda_l)^{-\beta}
+    &=(M_w)_{kl}\bigl[(-\bar{\boldsymbol\Lambda})^{-\beta}\bigr]_{ll}\\
+    &=\bigl[\mathbf M_w(-\bar{\boldsymbol\Lambda})^{-\beta}\bigr]_{kl}.
+\end{aligned}
+    \label{eq:right_power_entry}
+\end{equation}
+Therefore, the entrywise identities in \eqref{eq:lyap_entrywise} can be assembled into
+\begin{equation}
+    \boldsymbol\Lambda\tilde{\boldsymbol\Sigma}+\tilde{\boldsymbol\Sigma}\bar{\boldsymbol\Lambda}
+    =-\eta_\beta\Bigl[(-\boldsymbol\Lambda)^{-\beta}\mathbf M_w
+    +\mathbf M_w(-\bar{\boldsymbol\Lambda})^{-\beta}\Bigr].
+    \label{eq:lyap_eigen_coordinates}
+\end{equation}
+
+\textbf{The Lyapunov operator $(\mathbf A\boldsymbol\Sigma+\boldsymbol\Sigma\mathbf A^\top)$ in the original coordinates.}
+Multiplying both sides of \eqref{eq:lyap_eigen_coordinates} on the left by $\mathbf{P}$ and on the right by $\mathbf{P}^{\dagger}$.
+The left-hand side becomes
+\begin{equation}
+\begin{aligned}
+    \mathbf{P}\bigl(\boldsymbol\Lambda\tilde{\boldsymbol\Sigma}
+      +\tilde{\boldsymbol\Sigma}\bar{\boldsymbol\Lambda}\bigr)\mathbf{P}^{\dagger}
+    &=\mathbf{P}\Bigl[\mathbf{P}^{-1}
+      (\mathbf{A}\boldsymbol\Sigma+\boldsymbol\Sigma\mathbf{A}^{\top})
+      \mathbf{P}^{-\dagger}\Bigr]\mathbf{P}^{\dagger}\\
+    &=\mathbf{A}\boldsymbol\Sigma+\boldsymbol\Sigma\mathbf{A}^{\top}.
+\end{aligned}
+    \label{eq:lyap_return_left}
+\end{equation}
+The right-hand side becomes
+\begin{equation}
+\begin{aligned}
+    &-\eta_\beta\,\mathbf{P}\Bigl[
+      (-\boldsymbol{\Lambda})^{-\beta}\mathbf{M}_w
+      +\mathbf{M}_w(-\bar{\boldsymbol{\Lambda}})^{-\beta}
+      \Bigr]\mathbf{P}^{\dagger}\\
+    &=-\eta_\beta\,\mathbf{P}\Bigl[
+      (-\boldsymbol{\Lambda})^{-\beta}(\mathbf{P}^{-1}\boldsymbol{\Sigma}_w\mathbf{P}^{-\dagger})
+      +(\mathbf{P}^{-1}\boldsymbol{\Sigma}_w\mathbf{P}^{-\dagger})(-\bar{\boldsymbol{\Lambda}})^{-\beta}
+      \Bigr]\mathbf{P}^{\dagger}\\
+    &=-\eta_\beta\Bigl[
+      \bigl[\mathbf{P}(-\boldsymbol{\Lambda})^{-\beta}\mathbf{P}^{-1}\bigr]\boldsymbol{\Sigma}_w
+      \bigl[\mathbf{P}^{-\dagger}\mathbf{P}^{\dagger}\bigr]
+      +\bigl[\mathbf{P}\mathbf{P}^{-1}\bigr]\boldsymbol{\Sigma}_w
+      \bigl[\mathbf{P}^{-\dagger}(-\bar{\boldsymbol{\Lambda}})^{-\beta}\mathbf{P}^{\dagger}\bigr]
+      \Bigr]\\
+    &=-\eta_\beta\Bigl[
+      (-\mathbf{A})^{-\beta}\boldsymbol{\Sigma}_w
+      +\boldsymbol{\Sigma}_w\bigl[(-\mathbf{A})^{-\beta}\bigr]^{\dagger}
+      \Bigr].
+\end{aligned}
+    \label{eq:lyap_return_right}
+\end{equation}
+where $(-\mathbf{A})^{-\beta}:=\mathbf{P}(-\boldsymbol{\Lambda})^{-\beta}\mathbf{P}^{-1}$ is the principal power of $-\mathbf{A}$, and the
+last equality uses
+$\bigl[\mathbf{P}(-\boldsymbol{\Lambda})^{-\beta}\mathbf{P}^{-1}\bigr]^{\dagger}=\mathbf{P}^{-\dagger}(-\bar{\boldsymbol{\Lambda}})^{-\beta}\mathbf{P}^{\dagger}$.
+The principal power does not depend on the choice of eigenvectors, since it multiplies every eigenvector of $\mathbf{A}$ with
+eigenvalue $\lambda$ by $(-\lambda)^{-\beta}$, and the eigenvectors span $\mathbb{C}^n$. It is also real. Since $\mathbf{A}$ is real,
+its eigenvalues and eigenvectors occur in conjugate pairs, and $\operatorname{Re}(-\lambda_k)>0$ keeps every $-\lambda_k$ off the cut
+$(-\infty,0]$ of the principal branch, where $\overline{z^{-\beta}}=\bar z^{-\beta}$. Conjugating $(-\mathbf{A})^{-\beta}$ therefore
+permutes its eigenvalues and eigenvectors among themselves and returns the same matrix, so its conjugate transpose is its
+transpose. With $\eta_\beta=\alpha/\bigl(2\cos(\pi\beta/2)\bigr)$, \eqref{eq:lyap_eigen_coordinates} becomes
+\begin{equation}
+\boxed{\mathbf{A}\boldsymbol{\Sigma}+\boldsymbol{\Sigma}\mathbf{A}^\top
+    +\eta_\beta\Bigl[(-\mathbf{A})^{-\beta}\boldsymbol{\Sigma}_w
+    +\boldsymbol{\Sigma}_w\bigl[(-\mathbf{A})^{-\beta}\bigr]^{\top}\Bigr]=\mathbf{0}}
+    \label{eq:lyap_colored_Sw}
+\end{equation}
+and, for the isotropic spectrum $\boldsymbol{\Sigma}_w=\mathbf{I}$,
+\begin{equation}
+    \mathbf{A}\boldsymbol{\Sigma}+\boldsymbol{\Sigma}\mathbf{A}^\top
+    +\eta_\beta\Bigl[(-\mathbf{A})^{-\beta}+\bigl[(-\mathbf{A})^{-\beta}\bigr]^{\top}\Bigr]=\mathbf{0} .
+    \label{eq:lyap_colored}
+\end{equation}
+Equivalently, the general colored-noise equation \eqref{eq:lyap_colored_Sw} has the standard continuous-time Lyapunov form
+\begin{equation}
+\mathbf A\boldsymbol\Sigma+\boldsymbol\Sigma\mathbf A^\top+
+\mathbf Q_\beta(\mathbf A,\boldsymbol\Sigma_w)=\mathbf0,
+\label{eq:lyap_standard_form}
+\end{equation}
+where
+\begin{equation}
+\mathbf Q_\beta(\mathbf A,\boldsymbol\Sigma_w)
+=\eta_\beta\!\left[
+(-\mathbf A)^{-\beta}\boldsymbol\Sigma_w+
+\boldsymbol\Sigma_w\bigl[(-\mathbf A)^{-\beta}\bigr]^\top
+\right].
+\label{eq:Q_beta}
+\end{equation}
+At $\beta=0$ (\textbf{white noise}), $\eta_0=\alpha/\bigl(2\cos 0\bigr)=\alpha/2$ and
+$(-\mathbf{A})^{0}=\mathbf{I}$, so \eqref{eq:lyap_colored} becomes
+\begin{equation}
+    \mathbf{A}\boldsymbol{\Sigma}+\boldsymbol{\Sigma}\mathbf{A}^{\top}=-\alpha\mathbf{I}.
+    \label{eq:lyap_white_noise}
+\end{equation}
+
+\textbf{Vectorized solution of the common-exponent Lyapunov equation.}
+For a matrix $\mathbf X$, let $\vc(\mathbf X)$ denote column-stacking vectorization, and let $\otimes$ denote the Kronecker product. The identity
+\begin{equation}
+\vc(\mathbf U\mathbf X\mathbf V)=(\mathbf V^\top\otimes\mathbf U)\vc(\mathbf X)
+\label{eq:vec_product_identity}
+\end{equation}
+holds for conformable real matrices. Set
+\begin{equation}
+\mathbf B_\beta:=(-\mathbf A)^{-\beta},
+\qquad
+\mathbf K(\mathbf A):=\mathbf I\otimes\mathbf A+\mathbf A\otimes\mathbf I.
+\label{eq:kronecker_common_definitions}
+\end{equation}
+Then the two terms containing the unknown covariance in \eqref{eq:lyap_colored_Sw} satisfy
+\begin{equation}
+\begin{aligned}
+\vc(\mathbf A\boldsymbol\Sigma+\boldsymbol\Sigma\mathbf A^\top)
+&=\vc(\mathbf A\boldsymbol\Sigma)+\vc(\boldsymbol\Sigma\mathbf A^\top)\\
+&=(\mathbf I\otimes\mathbf A)\vc(\boldsymbol\Sigma)
+ +(\mathbf A\otimes\mathbf I)\vc(\boldsymbol\Sigma)\\
+&=\mathbf K(\mathbf A)\vc(\boldsymbol\Sigma).
+\end{aligned}
+\label{eq:vec_lyapunov_operator}
+\end{equation}
+whereas its forcing terms satisfy
+\begin{equation}
+\begin{aligned}
+\vc(\mathbf B_\beta\boldsymbol\Sigma_w+\boldsymbol\Sigma_w\mathbf B_\beta^\top)
+&=\vc(\mathbf B_\beta\boldsymbol\Sigma_w)
+ +\vc(\boldsymbol\Sigma_w\mathbf B_\beta^\top)\\
+&=(\mathbf I\otimes\mathbf B_\beta)\vc(\boldsymbol\Sigma_w)
+ +(\mathbf B_\beta\otimes\mathbf I)\vc(\boldsymbol\Sigma_w)\\
+&=\bigl(\mathbf I\otimes\mathbf B_\beta
+ +\mathbf B_\beta\otimes\mathbf I\bigr)\vc(\boldsymbol\Sigma_w).
+\end{aligned}
+\label{eq:vec_common_forcing}
+\end{equation}
+Consequently, \eqref{eq:lyap_colored_Sw} is equivalent to
+\begin{equation}
+\mathbf K(\mathbf A)\vc(\boldsymbol\Sigma)
+=-\eta_\beta\bigl(\mathbf I\otimes\mathbf B_\beta
++\mathbf B_\beta\otimes\mathbf I\bigr)\vc(\boldsymbol\Sigma_w).
+\label{eq:vec_common_linear_system}
+\end{equation}
+The eigenvalues of $\mathbf K(\mathbf A)$ are $\lambda_r+\lambda_s$ for $r,s=1,\ldots,n$.
+Their real parts are strictly negative because $\mathbf A$ is Hurwitz stable, so $\mathbf K(\mathbf A)$ is invertible. Therefore,
+\begin{equation}
+\boxed{\begin{aligned}
+\vc(\boldsymbol\Sigma)
+&=-\mathbf K(\mathbf A)^{-1}
+\left\{\eta_\beta\bigl[\mathbf I\otimes(-\mathbf A)^{-\beta}
++(-\mathbf A)^{-\beta}\otimes\mathbf I\bigr]\right\}
+\vc(\boldsymbol\Sigma_w)\\
+&=-\bigl(\mathbf I\otimes\mathbf A
++\mathbf A\otimes\mathbf I\bigr)^{-1}
+\left\{\eta_\beta\bigl[\mathbf I\otimes(-\mathbf A)^{-\beta}
++(-\mathbf A)^{-\beta}\otimes\mathbf I\bigr]\right\}
+\vc(\boldsymbol\Sigma_w).
+\end{aligned}}
+\label{eq:vec_common_solution}
+\end{equation}
+\subsection*{Interpreting the $(-\mathbf A)^{-\beta}\boldsymbol{\Sigma}_w$ term in the Lyapunov equation}
+
+Here we show that the forcing term in the Lyapunov equation \eqref{eq:lyap_colored_Sw} is a sum of the state--noise cross-covariance and its transpose. Define the formal zero-lag cross-covariance by the symmetric-limit integral
+\begin{equation}
+    \boldsymbol{\Sigma}_{xw}
+    :=\operatorname{p.v.}\frac{1}{2\pi}\int_{\mathbb R}
+    \mathbf R(\omega;\mathbf A)\,\mathbf S_w(\omega)\,d\omega .
+    \label{eq:Sigma_xw_definition}
+\end{equation}
+The principal-value interpretation is needed because $\boldsymbol w$ is generalized noise. For $\beta>0$ the integral is absolutely convergent at high frequency; for $\beta\le0$, its leading odd term is canceled by the symmetric limit. We first evaluate this cross-covariance. Since $\mathbf S_w(\omega)$ is even in $\omega$,
+\begin{equation}
+\boldsymbol{\Sigma}_{xw}
+=\frac{\alpha}{2\pi}\int_{0}^{\infty}\omega^{-\beta}
+\bigl[\mathbf R(\omega;\mathbf A)+\mathbf R(-\omega;\mathbf A)\bigr]\,d\omega\,
+\boldsymbol{\Sigma}_w .
+\label{eq:Sigma_xw_even}
+\end{equation}
+The two resolvents can be combined without assuming that $\mathbf A$ is symmetric:
+\begin{equation}
+\begin{aligned}
+\mathbf R(\omega;\mathbf A)+\mathbf R(-\omega;\mathbf A)
+&=\bigl[(-i\omega\mathbf I-\mathbf A)+(i\omega\mathbf I-\mathbf A)\bigr]
+  (\omega^2\mathbf I+\mathbf A^2)^{-1}\\
+&=-2\mathbf A(\omega^2\mathbf I+\mathbf A^2)^{-1}.
+\end{aligned}
+\label{eq:resolvent_pair_sum}
+\end{equation}
+Here we used the commuting factorization
+\begin{equation}
+(i\omega\mathbf I-\mathbf A)(-i\omega\mathbf I-\mathbf A)
+=\omega^2\mathbf I+\mathbf A^2 .
+\label{eq:resolvent_product}
+\end{equation}
+The factor is invertible for real $\omega$ because its eigenvalues
+$(i\omega-\lambda_k)(-i\omega-\lambda_k)$ are nonzero when
+$\operatorname{Re}\lambda_k<0$. Hence
+\begin{equation}
+\boldsymbol{\Sigma}_{xw}
+=\frac{\alpha}{\pi}\int_{0}^{\infty}\omega^{-\beta}
+(-\mathbf A)(\omega^2\mathbf I+\mathbf A^2)^{-1}\,d\omega\,
+\boldsymbol{\Sigma}_w .
+\label{eq:Sigma_xw_reduced}
+\end{equation}
+
+Now use $\mathbf A=\mathbf P\boldsymbol\Lambda\mathbf P^{-1}$. First,
+\begin{equation}
+\mathbf A^2
+=(\mathbf P\boldsymbol\Lambda\mathbf P^{-1})(\mathbf P\boldsymbol\Lambda\mathbf P^{-1})
+=\mathbf P\boldsymbol\Lambda^2\mathbf P^{-1},
+\label{eq:Sigma_xw_A_squared}
+\end{equation}
+where $\mathbf P^{-1}\mathbf P=\mathbf I$. Therefore,
+\begin{equation}
+\omega^2\mathbf I+\mathbf A^2
+=\mathbf P(\omega^2\mathbf I+\boldsymbol\Lambda^2)\mathbf P^{-1},
+\label{eq:Sigma_xw_shifted}
+\end{equation}
+and inversion reverses the similarity factors:
+\begin{equation}
+(\omega^2\mathbf I+\mathbf A^2)^{-1}
+=\mathbf P(\omega^2\mathbf I+\boldsymbol\Lambda^2)^{-1}\mathbf P^{-1}.
+\label{eq:Sigma_xw_inverse}
+\end{equation}
+Since $-\mathbf A=\mathbf P(-\boldsymbol\Lambda)\mathbf P^{-1}$, multiplying the last two identities gives
+\begin{equation}
+\begin{aligned}
+(-\mathbf A)(\omega^2\mathbf I+\mathbf A^2)^{-1}
+&=\mathbf P(-\boldsymbol\Lambda)(\omega^2\mathbf I+\boldsymbol\Lambda^2)^{-1}\mathbf P^{-1}\\
+&=\mathbf P\operatorname{diag}\!\left(
+\frac{-\lambda_1}{\omega^2+\lambda_1^2},\ldots,
+\frac{-\lambda_n}{\omega^2+\lambda_n^2}\right)\mathbf P^{-1},
+\end{aligned}
+\label{eq:Sigma_xw_diagonal}
+\end{equation}
+because $\boldsymbol\Lambda$ is diagonal.
+For each eigenvalue, the scalar integral established earlier gives
+\begin{equation}
+\int_{0}^{\infty}\omega^{-\beta}
+\frac{-\lambda_k}{\omega^2+\lambda_k^2}\,d\omega
+=\frac{\pi}{2\cos(\pi\beta/2)}(-\lambda_k)^{-\beta}.
+\label{eq:Sigma_xw_scalar}
+\end{equation}
+Therefore, with $\eta_\beta=\alpha/[2\cos(\pi\beta/2)]$,
+\begin{equation}
+    \boldsymbol{\Sigma}_{xw}
+    =\eta_\beta(-\mathbf A)^{-\beta}\boldsymbol{\Sigma}_w .
+    \label{eq:Sigma_xw_closed}
+\end{equation}
+
+With this identification, the forcing term in the covariance equation is
+\begin{equation}
+    \mathbf A\boldsymbol{\Sigma}+\boldsymbol{\Sigma}\mathbf A^\top
+    +\boldsymbol{\Sigma}_{xw}+\boldsymbol{\Sigma}_{xw}^{\top}
+    =\mathbf 0 .
+    \label{eq:lyap_cross_covariance}
+\end{equation}
+
+% =====================================================================
+\subsection*{Extending the results to $n \times n$ networks with region-specific noise exponents}
+% =====================================================================
+
+Let region $j$ have exponent $\beta_j\in(-1,1)$, and retain the real symmetric positive-semidefinite spatial covariance factor
+$\boldsymbol\Sigma_w$ from the setting above. It may have nonzero off-diagonal entries, representing spatially correlated
+neuronal inputs. Define
+\begin{equation}
+\mathbf D(\omega):=\operatorname{diag}\bigl(
+|\omega|^{-\beta_1/2},\ldots,|\omega|^{-\beta_n/2}\bigr),
+\qquad
+\mathbf S_w(\omega)
+=\alpha\,\mathbf D(\omega)\boldsymbol{\Sigma}_w\mathbf D(\omega).
+\label{eq:regional_noise_spectrum}
+\end{equation}
+For every nonzero frequency, $\mathbf D(\omega)$ is real and diagonal, but $\mathbf S_w(\omega)$ need not be diagonal.
+It is positive semidefinite because, for every $\mathbf v\in\mathbb C^n$,
+$\mathbf v^\dagger\mathbf S_w(\omega)\mathbf v
+=\alpha[\mathbf D(\omega)\mathbf v]^\dagger\boldsymbol\Sigma_w[\mathbf D(\omega)\mathbf v]\geq0$.
+The independent-input model of \href{https://doi.org/10.1162/netn_a_00348}{\citet{Novelli2024}} is the special case in which $\boldsymbol\Sigma_w$ is diagonal.
+
+Write $\sigma_{jk}:=(\boldsymbol\Sigma_w)_{jk}=\sigma_{kj}$, and, for $1\leq j\leq k\leq n$, define
+\begin{equation}
+\begin{gathered}
+\beta_{jk}:=\frac{\beta_j+\beta_k}{2},\qquad
+\mathbf Q_{jk}:=
+\begin{cases}
+\sigma_{jj}\mathbf e_j\mathbf e_j^\top,&j=k,\\
+\sigma_{jk}(\mathbf e_j\mathbf e_k^\top+\mathbf e_k\mathbf e_j^\top),&j<k.
+\end{cases}\\
+\boldsymbol\Sigma_w=\sum_{j\leq k}\mathbf Q_{jk}.
+\end{gathered}
+\label{eq:regional_pair_definitions}
+\end{equation}
+Indeed, $\mathbf D(\omega)\mathbf e_j=|\omega|^{-\beta_j/2}\mathbf e_j$. Thus each
+$(j,k)$ entry of \eqref{eq:regional_noise_spectrum} has exponent
+$\beta_j/2+\beta_k/2=\beta_{jk}$ and equals
+$\alpha\sigma_{jk}|\omega|^{-\beta_{jk}}$. Grouping symmetric entries gives
+\begin{equation}
+\mathbf S_w(\omega)
+=\alpha\sum_{j\leq k}|\omega|^{-\beta_{jk}}\mathbf Q_{jk}.
+\label{eq:regional_noise_expansion}
+\end{equation}
+Each $\mathbf Q_{jk}$ is real symmetric, but an off-diagonal $\mathbf Q_{jk}$ need not be positive semidefinite.
+This does not affect the algebra: every real symmetric matrix is a difference of two positive-semidefinite matrices,
+and the covariance integral, its closed form \eqref{eq:Sigma_closed_Sw}, and the Lyapunov equation
+\eqref{eq:lyap_colored_Sw} are linear in the spatial factor for a fixed exponent. We apply them to each
+$\mathbf Q_{jk}$ by this linear extension. Positive semidefiniteness applies to the complete spectrum and
+the complete covariance, not necessarily to individual pair terms.
+
+For each pair, set
+\begin{equation}
+\mathbf M^{(jk)}:=\mathbf P^{-1}\mathbf Q_{jk}\mathbf P^{-\dagger},
+\qquad
+\boldsymbol{\Sigma}^{(jk)}
+:=\frac{\alpha}{2\pi}\int_{\mathbb R}|\omega|^{-\beta_{jk}}
+\mathbf R(\omega;\mathbf A)\mathbf Q_{jk}\mathbf R(\omega;\mathbf A)^\dagger\,d\omega .
+\label{eq:regional_covariance_parts}
+\end{equation}
+Each $\beta_{jk}$ lies in $(-1,1)$. Hurwitz stability bounds the resolvent near zero frequency, giving
+an integrable $|\omega|^{-\beta_{jk}}$ factor there; at high frequency, the two resolvents give
+$O(|\omega|^{-2-\beta_{jk}})$. Thus every pair integral converges absolutely, even if its matrix
+$\mathbf Q_{jk}$ is indefinite. By \eqref{eq:regional_noise_expansion},
+$\boldsymbol{\Sigma}=\sum_{j\leq k}\boldsymbol{\Sigma}^{(jk)}$. Applying the closed form
+\eqref{eq:Sigma_closed_Sw} term by term gives
+\begin{equation}
+\begin{aligned}
+\boldsymbol{\Sigma}(\mathbf A;\beta_1,\ldots,\beta_n)
+={}&\sum_{j\leq k}\eta_{\beta_{jk}}\,\mathbf P
+\left[
+(\mathbf M^{(jk)})_{ab}
+\frac{(-\lambda_a)^{-\beta_{jk}}+(-\bar\lambda_b)^{-\beta_{jk}}}
+{-(\lambda_a+\bar\lambda_b)}
+\right]_{a,b=1}^{n}
+\mathbf P^\dagger,
+\end{aligned}
+\label{eq:Sigma_closed_regional}
+\end{equation}
+where $\eta_{\beta_{jk}}:=\alpha/[2\cos(\pi\beta_{jk}/2)]$ and every scalar and matrix power uses
+the principal branch specified above.
+
+\textbf{The Lyapunov equation for regional exponents and spatial correlations.}
+By the same linearity, \eqref{eq:lyap_colored_Sw} applied to each pair contribution gives
+\begin{equation}
+\mathbf A\boldsymbol{\Sigma}^{(jk)}+\boldsymbol{\Sigma}^{(jk)}\mathbf A^\top
++\eta_{\beta_{jk}}\left[
+(-\mathbf A)^{-\beta_{jk}}\mathbf Q_{jk}
++\mathbf Q_{jk}[(-\mathbf A)^{-\beta_{jk}}]^\top
+\right]=\mathbf0.
+\label{eq:regional_lyapunov_part}
+\end{equation}
+Summing over all pairs yields
+\begin{equation}
+\boxed{
+\begin{aligned}
+\mathbf A\boldsymbol{\Sigma}+\boldsymbol{\Sigma}\mathbf A^\top
++\sum_{j\leq k}\eta_{\beta_{jk}}\left[
+(-\mathbf A)^{-\beta_{jk}}\mathbf Q_{jk}
++\mathbf Q_{jk}[(-\mathbf A)^{-\beta_{jk}}]^\top
+\right]=\mathbf0 .
+\end{aligned}}
+\label{eq:lyap_regional}
+\end{equation}
+\textbf{Vectorized solution of the regional Lyapunov equation.}
+The same Kronecker representation applies to \eqref{eq:lyap_regional}. Let
+\begin{equation}
+\mathbf B_{jk}:=(-\mathbf A)^{-\beta_{jk}},
+\qquad
+\mathbf E_{jk}:=\mathbf e_j\mathbf e_k^\top,
+\label{eq:regional_vector_definitions}
+\end{equation}
+and define the pair-selection matrices
+\begin{equation}
+\mathbf C_{jk}:=
+\begin{cases}
+\vc(\mathbf E_{jj})\vc(\mathbf E_{jj})^\top,&j=k,\\
+\vc(\mathbf E_{jk}+\mathbf E_{kj})\vc(\mathbf E_{jk})^\top,&j<k.
+\end{cases}
+\label{eq:regional_pair_selector}
+\end{equation}
+Because $\boldsymbol\Sigma_w$ is symmetric, its $(j,k)$ entry is selected by
+$\vc(\mathbf E_{jk})^\top\vc(\boldsymbol\Sigma_w)=\sigma_{jk}$. Hence the pair matrices in
+\eqref{eq:regional_pair_definitions} obey
+\begin{equation}
+\vc(\mathbf Q_{jk})=\mathbf C_{jk}\vc(\boldsymbol\Sigma_w),
+\qquad j\leq k.
+\label{eq:vec_regional_pair}
+\end{equation}
+Vectorizing \eqref{eq:lyap_regional} gives
+\begin{equation}
+\begin{aligned}
+\mathbf 0
+={}&\mathbf K(\mathbf A)\vc(\boldsymbol\Sigma)
++\sum_{j\leq k}\eta_{\beta_{jk}}
+\bigl(\mathbf I\otimes\mathbf B_{jk}
++\mathbf B_{jk}\otimes\mathbf I\bigr)\vc(\mathbf Q_{jk})\\
+={}&\mathbf K(\mathbf A)\vc(\boldsymbol\Sigma)
++\sum_{j\leq k}\eta_{\beta_{jk}}
+\bigl(\mathbf I\otimes\mathbf B_{jk}
++\mathbf B_{jk}\otimes\mathbf I\bigr)\mathbf C_{jk}
+\vc(\boldsymbol\Sigma_w).
+\end{aligned}
+\label{eq:vec_regional_linear_system}
+\end{equation}
+Since $\mathbf K(\mathbf A)$ is invertible, the covariance is
+\begin{equation}
+\boxed{\begin{aligned}
+\vc(\boldsymbol\Sigma)
+&=-\mathbf K(\mathbf A)^{-1}
+\left\{
+\sum_{j\leq k}\eta_{\beta_{jk}}
+\bigl[\mathbf I\otimes(-\mathbf A)^{-\beta_{jk}}
++(-\mathbf A)^{-\beta_{jk}}\otimes\mathbf I\bigr]\mathbf C_{jk}
+\right\}
+\vc(\boldsymbol\Sigma_w)\\
+&=-\bigl(\mathbf I\otimes\mathbf A
++\mathbf A\otimes\mathbf I\bigr)^{-1}
+\left\{
+\sum_{j\leq k}\eta_{\beta_{jk}}
+\bigl[\mathbf I\otimes(-\mathbf A)^{-\beta_{jk}}
++(-\mathbf A)^{-\beta_{jk}}\otimes\mathbf I\bigr]\mathbf C_{jk}
+\right\}
+\vc(\boldsymbol\Sigma_w).
+\end{aligned}}
+\label{eq:vec_regional_solution}
+\end{equation}
+This equation holds for every diagonalizable real Hurwitz-stable $\mathbf A$ in the scope of the eigenbasis derivation.
+If $\boldsymbol\Sigma_w$ is diagonal, the off-diagonal pair terms vanish and the independent-input regional
+formulas are recovered. If every $\beta_j=\beta$, then $\beta_{jk}=\beta$ for all pairs and
+$\sum_{j\leq k}\mathbf Q_{jk}=\boldsymbol{\Sigma}_w$. Thus
+\eqref{eq:Sigma_closed_regional} and \eqref{eq:lyap_regional} reduce respectively to
+\eqref{eq:Sigma_closed_Sw} and \eqref{eq:lyap_colored_Sw}. If every $\beta_j=0$, then
+\eqref{eq:lyap_regional} reduces to the white-noise Lyapunov equation
+$\mathbf A\boldsymbol{\Sigma}+\boldsymbol{\Sigma}\mathbf A^\top=-\alpha\boldsymbol{\Sigma}_w$;
+for $\boldsymbol\Sigma_w=\mathbf I$, this is \eqref{eq:lyap_white_noise}.
+
+\end{document}

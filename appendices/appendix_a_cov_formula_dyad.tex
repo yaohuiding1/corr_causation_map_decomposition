@@ -1,0 +1,571 @@
+\documentclass[12pt]{article}
+
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=2.54cm,right=2.54cm,marginparwidth=1.75cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{lineno}
+% External equation references remain clickable in the standalone appendix.
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{xcolor}
+\usepackage{natbib}
+\usepackage{xr-hyper}
+\externaldocument[main-]{../build/corr_causation_lyap_factorization}[../../build/corr_causation_lyap_factorization.pdf]
+
+% The bibliography is printed only in the combined manuscript, so standalone
+% appendix citations have labels but no local hyperlink destinations.
+\makeatletter
+\def\hyper@natlinkstart#1{}
+\def\hyper@natlinkend{}
+\def\hyper@natlinkbreak#1#2{#1}
+\makeatother
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+% Reduced space above subsection headings (the article default is 3.25ex plus 1ex minus .2ex); format and space below are the defaults.
+\makeatletter
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}{-1.5ex plus -.5ex minus -.2ex}{1.5ex plus .2ex}{\normalfont\large\bfseries}}
+\makeatother
+
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\re}{\operatorname{Re}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\adj}{\operatorname{adj}}
+
+% Historical eq:D_ label keys are retained; displayed equation numbers use B.
+% Citation labels shared with the manuscript.
+\AtBeginDocument{\input{bibcites}}
+\begin{document}
+\pagestyle{empty}
+\linenumbers
+
+\section*{Appendix A: Deriving the Covariance Formula for Dyadic Interaction}
+
+\renewcommand{\theequation}{A-\arabic{equation}}
+\setcounter{equation}{0}
+
+For the two-region case, the neuronal covariance in the main-text equation \eqref{main-eq:intro_sigma} is
+\begin{equation}
+    \boldsymbol{\Sigma}
+    = \frac{\alpha}{2\pi}\int_{-\infty}^{\infty}|\omega|^{-\beta}\,\mathbf{R}(\omega)\,\boldsymbol\Sigma_w\,\mathbf{R}(\omega)^{\dagger}\,d\omega,
+    \qquad
+    \mathbf{R}(\omega):=(i\omega\mathbf{I}-\mathbf{A})^{-1},
+    \label{eq:D_Sigma}
+\end{equation}
+where $\mathbf A$ is real and Hurwitz stable, $\alpha>0$, $-1<\beta<1$, $\boldsymbol\Sigma_w$ is a real symmetric positive-semidefinite spatial covariance factor, and ${}^{\dagger}$ denotes the conjugate transpose.
+
+% =====================================================================
+\subsection*{The resolvent $\mathbf{R}(\omega)$}
+% =====================================================================
+
+For a $2\times2$ matrix $\mathbf{X}=\bigl(\begin{smallmatrix}x_{11}&x_{12}\\x_{21}&x_{22}\end{smallmatrix}\bigr)$,
+the adjugate is
+\begin{equation}
+    \adj(\mathbf{X}):=\begin{pmatrix}x_{22}&-x_{12}\\-x_{21}&x_{11}\end{pmatrix}
+    =\tr(\mathbf{X})\,\mathbf{I}-\mathbf{X}.
+    \label{eq:D_adj}
+\end{equation}
+Direct multiplication gives
+\begin{equation}
+    \mathbf{X}\adj(\mathbf{X})=\adj(\mathbf{X})\,\mathbf{X}=\det(\mathbf{X})\,\mathbf{I}.
+    \label{eq:D_adj_prod}
+\end{equation}
+Hence, whenever $\det\mathbf{X}\neq0$,
+\begin{equation}
+    \mathbf{X}^{-1}=\frac{\adj(\mathbf{X})}{\det\mathbf{X}}.
+    \label{eq:D_inv}
+\end{equation}
+
+Now let $\mathbf{X}=i\omega\mathbf{I}-\mathbf{A}$. Therefore, the resolvent $\mathbf{R}(\omega)$ in \eqref{eq:D_Sigma} is
+\begin{equation}
+    \mathbf{R}(\omega)=(i\omega\mathbf{I}-\mathbf{A})^{-1}
+    =\frac{\adj(i\omega\mathbf{I}-\mathbf{A})}{\det(i\omega\mathbf{I}-\mathbf{A})}.
+    \label{eq:D_res_form}
+\end{equation}
+
+The numerator of the resolvent is
+\begin{equation}
+\begin{aligned}
+    \adj(i\omega\mathbf{I}-\mathbf{A})
+    &=\tr(i\omega\mathbf{I}-\mathbf{A})\,\mathbf{I}-(i\omega\mathbf{I}-\mathbf{A})\\
+    &=(2i\omega-\tr\mathbf{A})\,\mathbf{I}-(i\omega\mathbf{I}-\mathbf{A})\\
+    &=i\omega\mathbf{I}-\bigl(\tr(\mathbf{A})\,\mathbf{I}-\mathbf{A}\bigr)\\
+    &=i\omega\mathbf{I}-\adj(\mathbf{A}).
+\end{aligned}
+    \label{eq:D_adj_res}
+\end{equation}
+
+The denominator of the resolvent is
+\begin{equation}
+\begin{aligned}
+    \det(i\omega\mathbf{I}-\mathbf{A})
+    &=\det\begin{pmatrix}i\omega-a_{11}&-a_{12}\\-a_{21}&i\omega-a_{22}\end{pmatrix}\\
+    &=(i\omega-a_{11})(i\omega-a_{22})-a_{12}a_{21}\\
+    &=(i\omega)^2-(a_{11}+a_{22})(i\omega)+(a_{11}a_{22}-a_{12}a_{21})\\
+    &=(i\omega)^2-\tr(\mathbf{A})\,(i\omega)+\det\mathbf{A}.
+\end{aligned}
+    \label{eq:D_det_expand}
+\end{equation}
+We recognize that \eqref{eq:D_det_expand} is the characteristic polynomial of
+$\mathbf{A}$ evaluated at $\mu=i\omega$, since
+\begin{equation}
+    \det(\mu\mathbf{I}-\mathbf{A})=\mu^2-\tr(\mathbf{A})\,\mu+\det\mathbf{A}=(\mu-\lambda_1)(\mu-\lambda_2),
+    \label{eq:D_charpoly}
+\end{equation}
+where $\lambda_1$ and $\lambda_2$ are the roots of the characteristic polynomial, that is, the eigenvalues of $\mathbf{A}$.
+Substituting $\mu=i\omega$ into \eqref{eq:D_charpoly}, define
+\begin{equation}
+    \Delta(\omega):=\det(i\omega\mathbf{I}-\mathbf{A})=(i\omega-\lambda_1)(i\omega-\lambda_2).
+    \label{eq:D_Delta}
+\end{equation}
+Therefore,
+\begin{equation}
+    \mathbf{R}(\omega)=\frac{i\omega\mathbf{I}-\adj(\mathbf{A})}{\Delta(\omega)}.
+    \label{eq:D_res}
+\end{equation}
+
+% =====================================================================
+\subsection*{The conjugate transposed resolvent $\mathbf{R}(\omega)^{\dagger}$}
+% =====================================================================
+
+The complex conjugate of an inverse is the inverse of the complex conjugate, so
+\begin{equation}
+    \overline{\mathbf{R}(\omega)}=\overline{(i\omega\mathbf{I}-\mathbf{A})^{-1}}=\bigl(\overline{i\omega\mathbf{I}-\mathbf{A}}\bigr)^{-1}=(-i\omega\mathbf{I}-\mathbf{A})^{-1}=\mathbf{R}(-\omega).
+    \label{eq:D_Rbar}
+\end{equation}
+The conjugate transpose is the complex conjugate followed by the transpose, so
+\begin{equation}
+    \mathbf{R}(\omega)^{\dagger}=\bigl(\overline{\mathbf{R}(\omega)}\bigr)^\top=\mathbf{R}(-\omega)^\top.
+    \label{eq:D_Rdag}
+\end{equation}
+
+Following the same logic of the derivation in \eqref{eq:D_adj_res} to \eqref{eq:D_Delta}, and replacing $\omega$ by $-\omega$ in \eqref{eq:D_res}, we obtain
+\begin{equation}
+    \mathbf{R}(-\omega)=\frac{-i\omega\mathbf{I}-\adj(\mathbf{A})}{\Delta(-\omega)},
+    \label{eq:D_Rneg}
+\end{equation}
+and transposing this gives
+\begin{equation}
+    \mathbf{R}(\omega)^{\dagger}=\mathbf{R}(-\omega)^\top=\frac{-i\omega\mathbf{I}-\adj(\mathbf{A})^\top}{\Delta(-\omega)},
+    \label{eq:D_Rdagnum}
+\end{equation}
+where the denominator is
+\begin{equation}
+    \Delta(-\omega):=\det(-i\omega\mathbf{I}-\mathbf{A})=(-i\omega-\lambda_1)(-i\omega-\lambda_2).
+    \label{eq:D_Deltaneg}
+\end{equation}
+
+% =====================================================================
+\subsection*{The resolvent product with the spatial covariance factor}
+% =====================================================================
+
+\begin{equation}
+    \mathbf{R}(\omega)\boldsymbol\Sigma_w\mathbf{R}(\omega)^{\dagger}
+    =\frac{\bigl(i\omega\mathbf{I}-\adj(\mathbf{A})\bigr)\boldsymbol\Sigma_w
+    \bigl(-i\omega\mathbf{I}-\adj(\mathbf{A})^\top\bigr)}{\Delta(\omega)\,\Delta(-\omega)}.
+    \label{eq:D_prod}
+\end{equation}
+The numerator of the product is
+\begin{equation}
+\begin{aligned}
+    \mathbf{N}_w(\omega)
+    &:=\bigl(i\omega\mathbf{I}-\adj(\mathbf{A})\bigr)\boldsymbol\Sigma_w
+    \bigl(-i\omega\mathbf{I}-\adj(\mathbf{A})^\top\bigr)\\
+    &=\omega^2\boldsymbol\Sigma_w-i\omega\boldsymbol\Sigma_w\adj(\mathbf A)^\top
+    +i\omega\adj(\mathbf A)\boldsymbol\Sigma_w
+    +\adj(\mathbf A)\boldsymbol\Sigma_w\adj(\mathbf A)^\top\\
+    &=\omega^2\boldsymbol\Sigma_w+\adj(\mathbf A)\boldsymbol\Sigma_w\adj(\mathbf A)^\top
+    +i\omega\bigl[\adj(\mathbf A)\boldsymbol\Sigma_w-\boldsymbol\Sigma_w\adj(\mathbf A)^\top\bigr].
+\end{aligned}
+    \label{eq:D_N}
+\end{equation}
+
+The denominator of the product is
+\begin{equation}
+\begin{aligned}
+    \Delta(\omega)\,\Delta(-\omega)
+    &=(i\omega-\lambda_1)(i\omega-\lambda_2)(-i\omega-\lambda_1)(-i\omega-\lambda_2)\\
+    &=(i\omega-\lambda_1)(-i\omega-\lambda_1)\,(i\omega-\lambda_2)(-i\omega-\lambda_2)\\
+    &=\bigl(\lambda_1^2-(i\omega)^2\bigr)\bigl(\lambda_2^2-(i\omega)^2\bigr)\\
+    &=(\lambda_1^2+\omega^2)(\lambda_2^2+\omega^2).
+\end{aligned}
+    \label{eq:D_denom}
+\end{equation}
+
+Combining \eqref{eq:D_N} and \eqref{eq:D_denom}, we write the product in \eqref{eq:D_prod} in shorthand as
+\begin{equation}
+    \mathbf{R}(\omega)\boldsymbol\Sigma_w\mathbf{R}(\omega)^{\dagger}
+    =\frac{\mathbf{N}_w(\omega)}{|\Delta(\omega)|^2},
+    \label{eq:D_short}
+\end{equation}
+where $|\Delta(\omega)|^2=\Delta(\omega)\,\Delta(-\omega)$, since for real $\mathbf{A}$ the complex conjugate of
+$\Delta(\omega)=\det(i\omega\mathbf{I}-\mathbf{A})$ is $\det(-i\omega\mathbf{I}-\mathbf{A})=\Delta(-\omega)$.
+
+\textbf{Parity.} By \eqref{eq:D_short}, the integrand in \eqref{eq:D_Sigma} is
+$|\omega|^{-\beta}\mathbf N_w(\omega)/|\Delta(\omega)|^2$.
+The weight $|\omega|^{-\beta}/|\Delta(\omega)|^2$ is even in $\omega$, because $|\Delta(\omega)|^2$ depends on $\omega$ only
+through $\omega^2$ by \eqref{eq:D_denom}. By \eqref{eq:D_N}, the first two terms of $\mathbf N_w(\omega)$ are even and the last is odd.
+
+% =====================================================================
+\subsection*{The matrix-valued integral decomposed into two scalar integrals}
+% =====================================================================
+
+Using \eqref{eq:D_short} in \eqref{eq:D_Sigma} and dropping the odd term identified above,
+\begin{equation}
+    \boldsymbol{\Sigma}
+    =\frac{\alpha}{2\pi}\int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}\bigl[\omega^2\,\boldsymbol\Sigma_w+\adj(\mathbf{A})\boldsymbol\Sigma_w\adj(\mathbf{A})^\top\bigr]}{(\lambda_1^2+\omega^2)(\lambda_2^2+\omega^2)}\,d\omega.
+    \label{eq:D_split}
+\end{equation}
+
+\textbf{Integrability.} Since $\mathbf{A}$ is stable, no eigenvalue is purely imaginary, so $\lambda_k^2+\omega^2\neq0$ for real
+$\omega$. By \eqref{eq:D_denom}, $(\lambda_1^2+\omega^2)(\lambda_2^2+\omega^2)=|\Delta(\omega)|^2$, so the function
+$(\lambda_1^2+\omega^2)(\lambda_2^2+\omega^2)/(1+\omega^2)^2$ is therefore continuous and
+positive on $\R$ and tends to $1$ as $|\omega|\to\infty$. It is therefore at least $\frac12$ outside some bounded interval and attains a positive
+minimum on that interval, so it has a positive infimum $m$, and the denominator in
+\eqref{eq:D_split} satisfies $(\lambda_1^2+\omega^2)(\lambda_2^2+\omega^2)\ge m\,(1+\omega^2)^2$. Hence the two
+even terms in \eqref{eq:D_split} are bounded in norm by constant multiples of
+\begin{equation*}
+\begin{array}{lcc}
+    \text{scalar factor} & \text{near }\omega=0 & \text{as }|\omega|\to\infty\\[2pt]
+    \hline
+    |\omega|^{-\beta}\,\omega^2 & |\omega|^{2-\beta} & |\omega|^{-2-\beta}\\
+    |\omega|^{-\beta} & |\omega|^{-\beta} & |\omega|^{-4-\beta}
+\end{array}
+\end{equation*}
+which are integrable near the origin because $\beta<1$ and at infinity because $\beta>-1$. So each of these two terms is
+absolutely integrable over $\R$, and the integral over them splits term by term. The odd term was dropped in
+\eqref{eq:D_split}, since the weight is even and that term is odd. Dropping it is justified because the odd
+term times the weight is also absolutely integrable. Its norm is at most a constant times
+$|\omega|^{1-\beta}/\bigl(m\,(1+\omega^2)^2\bigr)$, which behaves like $|\omega|^{1-\beta}$ near the
+origin and like $|\omega|^{-3-\beta}$ at infinity, both integrable because $-1<\beta<1$, and the integral of an absolutely
+integrable odd function vanishes.
+
+Taking the constant matrices out of the integrals,
+\begin{equation}
+    \boxed{\boldsymbol{\Sigma}
+    =\frac{\alpha}{2\pi}\Bigl[\Bigl(\int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}\,\omega^2}{|\Delta(\omega)|^2}\,d\omega\Bigr)\boldsymbol\Sigma_w
+    +\Bigl(\int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}}{|\Delta(\omega)|^2}\,d\omega\Bigr)\adj(\mathbf{A})\boldsymbol\Sigma_w\adj(\mathbf{A})^\top\Bigr]}
+    \label{eq:D_split2}
+\end{equation}
+where we define \textbf{two scalar integrals}
+\begin{equation}
+    \mathcal{J}:=\int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}\,\omega^2}{|\Delta(\omega)|^2}\,d\omega,
+    \qquad
+    \mathcal{L}:=\int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}}{|\Delta(\omega)|^2}\,d\omega.
+    \label{eq:D_JLdef}
+\end{equation}
+The integrands of $\mathcal{J}$ and $\mathcal{L}$ are positive for $\omega\neq0$, so $\mathcal{J}$ and $\mathcal{L}$ are
+positive numbers. Since $\boldsymbol\Sigma_w$ is real symmetric positive semidefinite, so are
+$\boldsymbol\Sigma_w$ and $\adj(\mathbf A)\boldsymbol\Sigma_w\adj(\mathbf A)^\top$; hence $\boldsymbol\Sigma$ is real symmetric positive semidefinite.
+
+% =====================================================================
+\subsection*{Closed-form solutions of the scalar integrals $\mathcal{J}$ and $\mathcal{L}$}
+% =====================================================================
+
+\textbf{Partial fractions.} Suppose first that $\lambda_1\neq\lambda_2$. By \eqref{eq:D_charpoly}, $\lambda_1+\lambda_2=\tr\mathbf{A}$, which is real and
+equals $\re\lambda_1+\re\lambda_2<0$ by stability. The difference
+$\lambda_2^2-\lambda_1^2=(\lambda_2-\lambda_1)(\lambda_1+\lambda_2)$ is therefore a product of two nonzero factors, so
+$\lambda_1^2\neq\lambda_2^2$. By \eqref{eq:D_denom} and \eqref{eq:D_JLdef}, the integrands of $\mathcal{J}$ and $\mathcal{L}$ are
+$|\omega|^{-\beta}$ times the rational functions
+\begin{align}
+    \frac{\omega^2}{(\lambda_1^2+\omega^2)(\lambda_2^2+\omega^2)}
+    &=\frac{1}{\lambda_2^2-\lambda_1^2}\left[\frac{\lambda_2^2}{\lambda_2^2+\omega^2}-\frac{\lambda_1^2}{\lambda_1^2+\omega^2}\right],
+    \label{eq:D_pfJ}\\
+    \frac{1}{(\lambda_1^2+\omega^2)(\lambda_2^2+\omega^2)}
+    &=\frac{1}{\lambda_2^2-\lambda_1^2}\left[\frac{1}{\lambda_1^2+\omega^2}-\frac{1}{\lambda_2^2+\omega^2}\right].
+    \label{eq:D_pfL}
+\end{align}
+
+\textbf{An elementary integral.} Multiplied by $|\omega|^{-\beta}$, every term in the brackets of \eqref{eq:D_pfJ} and
+\eqref{eq:D_pfL} has, up to a constant factor, the form $|\omega|^{-\beta}/(c^2+\omega^2)$ with $c=\lambda_k$. Let $c<0$ be real
+and $-1<\beta<1$. Since the integrand $|\omega|^{-\beta}/(c^2+\omega^2)$ is even, its integral over $\R$ is twice the integral
+over $\omega>0$. With $\omega=(-c)\xi$ we have $d\omega=(-c)\,d\xi$,
+$\omega^{-\beta}=(-c)^{-\beta}\xi^{-\beta}$ and $c^2+\omega^2=(-c)^2(1+\xi^2)$, so the powers of $-c$ combine as
+$(-c)^{-\beta}\cdot(-c)^{-2}\cdot(-c)=(-c)^{-1-\beta}$ and
+\begin{equation}
+    \int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}}{c^2+\omega^2}\,d\omega
+    =2(-c)^{-1-\beta}\int_0^\infty\frac{\xi^{-\beta}}{1+\xi^2}\,d\xi .
+    \label{eq:D_elem_sub}
+\end{equation}
+Let $\xi^2=t$, we have $\xi^{-\beta}=t^{-\beta/2}$ and $d\xi=\frac12t^{-1/2}\,dt$. Therefore,
+\begin{equation}
+\begin{aligned}
+    2(-c)^{-1-\beta}\int_0^\infty\frac{\xi^{-\beta}}{1+\xi^2}\,d\xi
+    &=2(-c)^{-1-\beta}\int_0^\infty\frac{t^{-\beta/2}}{1+t}\cdot\frac12\,t^{-1/2}\,dt\\
+    &=(-c)^{-1-\beta}\int_0^\infty t^{-\beta/2-1/2}\,(1+t)^{-1}\,dt\\
+    &=(-c)^{-1-\beta}\int_0^\infty t^{\frac{1-\beta}{2}-1}(1+t)^{-1}\,dt.
+\end{aligned}
+    \label{eq:D_elem_beta}
+\end{equation}
+We recognize that the integral in \eqref{eq:D_elem_beta} is Euler's beta integral \href{https://press.princeton.edu/books/paperback/9780691113852/complex-analysis}{\citep{SteinShakarchi2003}}, whose standard form is
+\begin{equation}
+    B(p,q):=\int_0^1 u^{p-1}(1-u)^{q-1}\,du=\frac{\Gamma(p)\,\Gamma(q)}{\Gamma(p+q)},\qquad p,q>0.
+    \label{eq:D_beta_std}
+\end{equation}
+The substitution $u=t/(1+t)$ maps $t\in[0,\infty)$ onto $u\in[0,1)$, with $1-u=1/(1+t)$ and $du=(1+t)^{-2}\,dt$. The
+integrand of \eqref{eq:D_beta_std} therefore becomes
+\begin{equation*}
+    u^{p-1}(1-u)^{q-1}\,du
+    =t^{p-1}(1+t)^{-(p-1)}\,(1+t)^{-(q-1)}\,(1+t)^{-2}\,dt
+    =t^{p-1}(1+t)^{-p-q}\,dt,
+\end{equation*}
+and
+\begin{equation}
+    \int_0^\infty t^{p-1}(1+t)^{-p-q}\,dt=\frac{\Gamma(p)\,\Gamma(q)}{\Gamma(p+q)},\qquad p,q>0.
+    \label{eq:D_betaint}
+\end{equation}
+The integral in \eqref{eq:D_elem_beta} is \eqref{eq:D_betaint} with $p=(1-\beta)/2$ and $q=(1+\beta)/2$, both positive
+because $-1<\beta<1$, and $\Gamma(p+q)=\Gamma(1)=1$.
+Therefore,
+\begin{equation}
+\begin{aligned}
+    (-c)^{-1-\beta}\int_0^\infty t^{\frac{1-\beta}{2}-1}(1+t)^{-1}\,dt
+    &=(-c)^{-1-\beta}\,\frac{\Gamma\!\left(\frac{1-\beta}{2}\right)\Gamma\!\left(\frac{1+\beta}{2}\right)}{\Gamma(1)}\\
+    &=(-c)^{-1-\beta}\,\Gamma\!\left(\tfrac{1-\beta}{2}\right)\Gamma\!\left(\tfrac{1+\beta}{2}\right).
+\end{aligned}
+    \label{eq:D_elem_gamma}
+\end{equation}
+Equation \eqref{eq:D_elem_gamma} can be simplified further with the reflection formula \href{https://press.princeton.edu/books/paperback/9780691113852/complex-analysis}{\citep{SteinShakarchi2003}}
+\begin{equation}
+    \Gamma(\zeta)\,\Gamma(1-\zeta)=\frac{\pi}{\sin(\pi\zeta)}.
+    \label{eq:D_reflection}
+\end{equation}
+Let $\zeta=(1+\beta)/2$, hence $1-\zeta=(1-\beta)/2$. Finally, because
+$\sin(\pi\zeta)=\sin(\pi/2+\pi\beta/2)=\cos(\pi\beta/2)$, we have
+\begin{equation}
+    \Gamma\!\left(\tfrac{1-\beta}{2}\right)\Gamma\!\left(\tfrac{1+\beta}{2}\right)=\frac{\pi}{\cos(\pi\beta/2)}.
+    \label{eq:D_gamma_cos}
+\end{equation}
+Hence, for real $c<0$ and $-1<\beta<1$, the elementary integral defined in \eqref{eq:D_elem_sub} is evaluated to be
+\begin{equation}
+    \int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}}{c^2+\omega^2}\,d\omega
+    = \frac{\pi\,(-c)^{-1-\beta}}{\cos(\pi\beta/2)} .
+    \label{eq:D_elem}
+\end{equation}
+
+\textbf{Extending the elementary integral to the left half-plane.} Let $c$ be complex with $\re c<0$ and let $\omega$ be real. The real part of $c\pm i\omega$ is $\re c$, and
+$|c\pm i\omega|\ge|\omega|-|c|$, so
+\begin{equation*}
+    |c\pm i\omega|\ge\max\bigl(-\re c,\;|\omega|-|c|\bigr)>0 .
+\end{equation*}
+The identity \eqref{eq:D_elem} extends to every complex $c$ with $\re c<0$. Both sides are holomorphic in $c$ on this
+half-plane, which is connected, and agree on the negative real axis, so by the identity theorem \href{https://press.princeton.edu/books/paperback/9780691113852/complex-analysis}{\citep[Ch.~2]{SteinShakarchi2003}} they agree on
+the whole half-plane. On the right side, $(-c)^{-1-\beta}:=\exp(-(1+\beta)\operatorname{Log}(-c))$ is the principal power of $-c$, which is
+holomorphic there because $-c$ lies in the right half-plane. For real $c<0$, $\operatorname{Log}(-c)=\ln(-c)$, so this principal power
+equals the real power in \eqref{eq:D_elem}. On the left side, $c^2+\omega^2=(c+i\omega)(c-i\omega)$. On a compact subset $\mathcal{K}$ of the half-plane, where
+$\re c\le-\delta$ and $|c|\le C_0$ for some $\delta,C_0>0$, the bound above gives
+$|c\pm i\omega|\ge\max(\delta,|\omega|-C_0)$, so $|c^2+\omega^2|=|c+i\omega|\,|c-i\omega|\ge\max(\delta,|\omega|-C_0)^2$. Let
+$R:=\max(2C_0,1)$. For $|\omega|\ge R$, $|\omega|-C_0\ge|\omega|/2\ge0$ and $\omega^2\ge1$, so
+$|c^2+\omega^2|\ge\max(\delta,|\omega|-C_0)^2\ge(|\omega|-C_0)^2\ge\omega^2/4\ge(1+\omega^2)/8$. For $|\omega|\le R$,
+$|c^2+\omega^2|\ge\max(\delta,|\omega|-C_0)^2\ge\delta^2\ge\delta^2(1+\omega^2)/(1+R^2)$. Hence
+$|c^2+\omega^2|\ge m_{\mathcal{K}}(1+\omega^2)$ with $m_{\mathcal{K}}:=\min\bigl(1/8,\,\delta^2/(1+R^2)\bigr)>0$, uniformly in $c\in\mathcal{K}$. The integrand is continuous in $(c,\omega)$ and holomorphic in $c$ for $\omega\neq0$, so the integrals over
+$I_N:=[-N,-1/N]\cup[1/N,N]$, $N\ge2$, are holomorphic in $c$, by the theorem on holomorphic functions defined by integrals \href{https://press.princeton.edu/books/paperback/9780691113852/complex-analysis}{\citep[Ch.~2]{SteinShakarchi2003}}. By the uniform lower bound, the integrand is dominated, uniformly in $c\in\mathcal{K}$, by
+$m_{\mathcal{K}}^{-1}|\omega|^{-\beta}/(1+\omega^2)$, which is integrable over $\R$ because $-1<\beta<1$. The truncated integrals therefore
+converge to the integral over $\R$ uniformly on compact subsets as $N\to\infty$, so the left side is holomorphic as well,
+by the Weierstrass convergence theorem \href{https://press.princeton.edu/books/paperback/9780691113852/complex-analysis}{\citep[Ch.~2]{SteinShakarchi2003}}.
+
+\textbf{Closed-form solutions of $\mathcal{J}$ and $\mathcal{L}$.} Multiply \eqref{eq:D_pfJ} and \eqref{eq:D_pfL} by $|\omega|^{-\beta}$ and integrate term by term. Each
+term is \eqref{eq:D_elem} with $c=\lambda_1$ or $c=\lambda_2$, both in the left half-plane by stability. For $c$ with $\re c<0$
+and real $\omega$, $|c\pm i\omega|^2=(\re c)^2+(\operatorname{Im}c\pm\omega)^2$, so the ratio $|c\pm i\omega|^2/(1+\omega^2)$ is continuous and
+positive on $\R$ and tends to $1$ as $|\omega|\to\infty$. It is therefore at least $\frac12$ outside some bounded interval and attains a positive
+minimum on that interval, so it has a positive infimum $m_c$, and
+$|c\pm i\omega|^2\ge m_c\,(1+\omega^2)$ for every real $\omega$. Each term is integrable, because this bound with
+$c=\lambda_k$ gives $|\lambda_k^2+\omega^2|=|\lambda_k+i\omega|\,|\lambda_k-i\omega|\ge m_{\lambda_k}(1+\omega^2)$, so
+\begin{equation}
+    \int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}}{\lambda_k^2+\omega^2}\,d\omega=\frac{\pi\,(-\lambda_k)^{-1-\beta}}{\cos(\pi\beta/2)},
+    \qquad k=1,2.
+    \label{eq:D_elem_lam}
+\end{equation}
+For principal powers, $\lambda_k^2\,(-\lambda_k)^{-1-\beta}=(-\lambda_k)^2\,(-\lambda_k)^{-1-\beta}=(-\lambda_k)^{1-\beta}$. Also
+$\lambda_2^2-\lambda_1^2=(\lambda_2-\lambda_1)(\lambda_1+\lambda_2)=\tr(\mathbf{A})\,(\lambda_2-\lambda_1)$, since
+$\lambda_1+\lambda_2=\tr\mathbf{A}$ by \eqref{eq:D_charpoly}. Hence, by \eqref{eq:D_JLdef}, \eqref{eq:D_pfJ} and \eqref{eq:D_elem_lam},
+\begin{equation}
+\begin{aligned}
+    \mathcal{J}&=\int_{-\infty}^{\infty}|\omega|^{-\beta}\,\frac{1}{\lambda_2^2-\lambda_1^2}
+      \left[\frac{\lambda_2^2}{\lambda_2^2+\omega^2}-\frac{\lambda_1^2}{\lambda_1^2+\omega^2}\right]d\omega\\
+    &=\frac{1}{\lambda_2^2-\lambda_1^2}\Bigl[\lambda_2^2\int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}}{\lambda_2^2+\omega^2}\,d\omega
+      -\lambda_1^2\int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}}{\lambda_1^2+\omega^2}\,d\omega\Bigr]\\
+    &=\frac{1}{\lambda_2^2-\lambda_1^2}\Bigl[\lambda_2^2\,\frac{\pi(-\lambda_2)^{-1-\beta}}{\cos(\pi\beta/2)}
+      -\lambda_1^2\,\frac{\pi(-\lambda_1)^{-1-\beta}}{\cos(\pi\beta/2)}\Bigr]\\
+    &=\frac{\pi\bigl[(-\lambda_2)^{1-\beta}-(-\lambda_1)^{1-\beta}\bigr]}{\tr(\mathbf{A})\,(\lambda_2-\lambda_1)\cos(\pi\beta/2)},
+\end{aligned}
+    \label{eq:D_Jchain}
+\end{equation}
+Similarly, by \eqref{eq:D_JLdef}, \eqref{eq:D_pfL} and \eqref{eq:D_elem_lam},
+\begin{equation}
+\begin{aligned}
+    \mathcal{L}&=\int_{-\infty}^{\infty}|\omega|^{-\beta}\,\frac{1}{\lambda_2^2-\lambda_1^2}
+      \left[\frac{1}{\lambda_1^2+\omega^2}-\frac{1}{\lambda_2^2+\omega^2}\right]d\omega\\
+    &=\frac{1}{\lambda_2^2-\lambda_1^2}\Bigl[\int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}}{\lambda_1^2+\omega^2}\,d\omega
+      -\int_{-\infty}^{\infty}\frac{|\omega|^{-\beta}}{\lambda_2^2+\omega^2}\,d\omega\Bigr]\\
+    &=\frac{1}{\lambda_2^2-\lambda_1^2}\Bigl[\frac{\pi(-\lambda_1)^{-1-\beta}}{\cos(\pi\beta/2)}
+      -\frac{\pi(-\lambda_2)^{-1-\beta}}{\cos(\pi\beta/2)}\Bigr]\\
+    &=\frac{\pi\bigl[(-\lambda_1)^{-1-\beta}-(-\lambda_2)^{-1-\beta}\bigr]}{\tr(\mathbf{A})\,(\lambda_2-\lambda_1)\cos(\pi\beta/2)},
+\end{aligned}
+    \label{eq:D_Lchain}
+\end{equation}
+\textbf{Repeated eigenvalue.} When $\lambda_1=\lambda_2$, $\lambda_1+\lambda_2=\tr\mathbf{A}$ from \eqref{eq:D_charpoly} gives
+$\lambda_1=\lambda_2=a$ with $a:=\tr(\mathbf{A})/2<0$, and $|\Delta(\omega)|^2=(a^2+\omega^2)^2$ by \eqref{eq:D_denom}. The integrands of $\mathcal{J}$ and $\mathcal{L}$ are even, so each integral over $\R$ is twice the
+integral over $\omega>0$, where $|\omega|^{-\beta}\omega^2=\omega^{2-\beta}$ and $|\omega|^{-\beta}=\omega^{-\beta}$. Substitute $\omega=(-a)\xi$, for
+which $d\omega=(-a)\,d\xi$, $\omega^{2-\beta}=(-a)^{2-\beta}\xi^{2-\beta}$, $\omega^{-\beta}=(-a)^{-\beta}\xi^{-\beta}$ and
+$(a^2+\omega^2)^2=(-a)^4(1+\xi^2)^2$. The powers of $-a$ combine as $(-a)^{2-\beta}\cdot(-a)^{-4}\cdot(-a)=(-a)^{-1-\beta}$ for
+$\mathcal{J}$ and $(-a)^{-\beta}\cdot(-a)^{-4}\cdot(-a)=(-a)^{-3-\beta}$ for $\mathcal{L}$, so
+\begin{equation}
+    \mathcal{J}=2(-a)^{-1-\beta}\int_0^\infty\frac{\xi^{2-\beta}}{(1+\xi^2)^2}\,d\xi,
+    \qquad
+    \mathcal{L}=2(-a)^{-3-\beta}\int_0^\infty\frac{\xi^{-\beta}}{(1+\xi^2)^2}\,d\xi.
+    \label{eq:D_rep_sub}
+\end{equation}
+With $\xi^2=t$ and $d\xi=\frac12t^{-1/2}\,dt$, the factors $2$ and $\frac12$ cancel, and
+$\xi^{2-\beta}t^{-1/2}=t^{\frac{3-\beta}{2}-1}$ and $\xi^{-\beta}t^{-1/2}=t^{\frac{1-\beta}{2}-1}$, so
+\begin{align}
+    \mathcal{J}&=(-a)^{-1-\beta}\int_0^\infty t^{\frac{3-\beta}{2}-1}(1+t)^{-2}\,dt
+    =(-a)^{-1-\beta}\,\frac{\Gamma\!\left(\frac{3-\beta}{2}\right)\Gamma\!\left(\frac{1+\beta}{2}\right)}{\Gamma(2)},
+    \label{eq:D_rep_betaJ}\\
+    \mathcal{L}&=(-a)^{-3-\beta}\int_0^\infty t^{\frac{1-\beta}{2}-1}(1+t)^{-2}\,dt
+    =(-a)^{-3-\beta}\,\frac{\Gamma\!\left(\frac{1-\beta}{2}\right)\Gamma\!\left(\frac{3+\beta}{2}\right)}{\Gamma(2)},
+    \label{eq:D_rep_betaL}
+\end{align}
+by \eqref{eq:D_betaint} with $(p,q)=((3-\beta)/2,(1+\beta)/2)$ and $((1-\beta)/2,(3+\beta)/2)$, all positive, and $p+q=2$ in both
+cases. By $\Gamma(x+1)=x\,\Gamma(x)$, $\Gamma(\frac{3-\beta}{2})=\frac{1-\beta}{2}\Gamma(\frac{1-\beta}{2})$ and
+$\Gamma(\frac{3+\beta}{2})=\frac{1+\beta}{2}\Gamma(\frac{1+\beta}{2})$. With $\Gamma(2)=1$ and
+$\Gamma(\frac{1-\beta}{2})\Gamma(\frac{1+\beta}{2})=\pi/\cos(\pi\beta/2)$ from \eqref{eq:D_gamma_cos},
+\begin{equation}
+    \mathcal{J}=\frac{\pi\,(1-\beta)\,(-a)^{-1-\beta}}{2\cos(\pi\beta/2)},
+    \qquad
+    \mathcal{L}=\frac{\pi\,(1+\beta)\,(-a)^{-3-\beta}}{2\cos(\pi\beta/2)}.
+    \label{eq:D_rep_JL}
+\end{equation}
+The values in \eqref{eq:D_rep_JL} are also the limits of \eqref{eq:D_Jchain} and \eqref{eq:D_Lchain} as
+$\lambda_1,\lambda_2\to a$. Let $\varphi(\lambda):=(-\lambda)^{1-\beta}$ and $\psi(\lambda):=(-\lambda)^{-1-\beta}$. Both are holomorphic
+near $a$, since $-a>0$, and by the chain rule $\varphi'(\lambda)=-(1-\beta)(-\lambda)^{-\beta}$ and
+$\psi'(\lambda)=(1+\beta)(-\lambda)^{-2-\beta}$. In \eqref{eq:D_Jchain} and \eqref{eq:D_Lchain}, the difference quotients
+$\bigl(\varphi(\lambda_2)-\varphi(\lambda_1)\bigr)/(\lambda_2-\lambda_1)$ and $\bigl(\psi(\lambda_2)-\psi(\lambda_1)\bigr)/(\lambda_2-\lambda_1)$
+therefore tend to $\varphi'(a)$ and $\psi'(a)$, while $\tr\mathbf{A}=2a=-2(-a)$. Hence
+\begin{equation*}
+\begin{aligned}
+    \mathcal{J}&\to\frac{\pi\,\varphi'(a)}{2a\cos(\pi\beta/2)}
+    =\frac{\pi\,(1-\beta)(-a)^{-\beta}}{2(-a)\cos(\pi\beta/2)}
+    =\frac{\pi\,(1-\beta)(-a)^{-1-\beta}}{2\cos(\pi\beta/2)},\\
+    \mathcal{L}&\to-\frac{\pi\,\psi'(a)}{2a\cos(\pi\beta/2)}
+    =\frac{\pi\,(1+\beta)(-a)^{-2-\beta}}{2(-a)\cos(\pi\beta/2)}
+    =\frac{\pi\,(1+\beta)(-a)^{-3-\beta}}{2\cos(\pi\beta/2)}.
+\end{aligned}
+\end{equation*}
+
+% =====================================================================
+\subsection*{The covariance formula in terms of $\alpha$, $\beta$, $\mathbf{A}$, and $\boldsymbol\Sigma_w$}
+% =====================================================================
+
+
+Substituting \eqref{eq:D_Jchain} and \eqref{eq:D_Lchain} for $\mathcal{J}$ and $\mathcal{L}$ of \eqref{eq:D_JLdef} into
+\eqref{eq:D_split2}, we have
+\begin{equation}
+\boxed{
+\begin{aligned}
+    \boldsymbol{\Sigma}
+    &=\frac{\alpha}{2\pi}\Bigl[\frac{\pi f}{\tr(\mathbf{A})\cos(\pi\beta/2)}\,\boldsymbol\Sigma_w
+      +\frac{\pi g}{\tr(\mathbf{A})\cos(\pi\beta/2)}\,\adj(\mathbf{A})\boldsymbol\Sigma_w\adj(\mathbf{A})^\top\Bigr]\\
+    &=\frac{\alpha}{2\tr(\mathbf{A})\cos(\pi\beta/2)}\Bigl[f\,\boldsymbol\Sigma_w+g\,\adj(\mathbf{A})\boldsymbol\Sigma_w\adj(\mathbf{A})^\top\Bigr],
+\end{aligned}}
+    \label{eq:D_Sigma_fg}
+\end{equation}
+where
+\begin{equation}
+    f:=\frac{(-\lambda_2)^{1-\beta}-(-\lambda_1)^{1-\beta}}{\lambda_2-\lambda_1},
+    \qquad
+    g:=\frac{(-\lambda_1)^{-1-\beta}-(-\lambda_2)^{-1-\beta}}{\lambda_2-\lambda_1},
+    \label{eq:D_fgdef}
+\end{equation}
+for distinct eigenvalues, with all powers principal. At a repeated eigenvalue $\lambda_1=\lambda_2=a$,
+the limits derived above give the definitions
+\begin{equation}
+    f:=-(1-\beta)(-a)^{-\beta},
+    \qquad
+    g:=-(1+\beta)(-a)^{-2-\beta}.
+    \label{eq:D_fg_repeated}
+\end{equation}
+Thus \eqref{eq:D_Sigma_fg} also applies when the matrix is defective; no eigenvector basis was used.
+The eigenvalues can be computed from the entries of $\mathbf A$, with $a=\tr(\mathbf{A})/2$:
+\begin{align}
+    \lambda_1
+    &=\frac{2a-\sqrt{(2a)^2-4\det\mathbf{A}}}{2}
+    =a-\sqrt{a^2-\det\mathbf{A}},
+    \label{eq:D_lambda}\\
+    \lambda_2
+    &=\frac{2a+\sqrt{(2a)^2-4\det\mathbf{A}}}{2}
+    =a+\sqrt{a^2-\det\mathbf{A}}.
+    \label{eq:D_lambda2}
+\end{align}
+The square root is principal; exchanging the eigenvalue labels leaves $f$ and $g$ unchanged.
+From \eqref{eq:D_lambda} and \eqref{eq:D_lambda2}, $\lambda_1+\lambda_2=2a$ and
+$\lambda_1\lambda_2=a^2-(a^2-\det\mathbf{A})=\det\mathbf{A}$. The eigenvalues are a complex-conjugate pair if $\det\mathbf{A}>a^2$
+and real otherwise. Stability gives $\det\mathbf{A}>0$, since $\det\mathbf{A}=|\lambda_1|^2$
+for a conjugate pair and is a product of two negative numbers for a real pair. Since $\mathcal{J},\mathcal{L}>0$,
+$\tr\mathbf{A}<0$ and $\cos(\pi\beta/2)>0$, the coefficients $f$ and $g$ are real and negative in both cases.
+
+% =====================================================================
+\subsection*{The covariance formula at $\beta=0$ (white noise) satisfies the Lyapunov equation}
+% =====================================================================
+
+At $\beta=0$, \eqref{eq:D_fgdef} gives
+\begin{equation}
+\begin{aligned}
+    f&=\frac{(-\lambda_2)-(-\lambda_1)}{\lambda_2-\lambda_1}=-1,\\
+    g&=\frac{(-\lambda_1)^{-1}-(-\lambda_2)^{-1}}{\lambda_2-\lambda_1}
+    =\frac{\lambda_2^{-1}-\lambda_1^{-1}}{\lambda_2-\lambda_1}
+    =\frac{\lambda_1-\lambda_2}{(\lambda_2-\lambda_1)\,\lambda_1\lambda_2}
+    =-\frac{1}{\det\mathbf{A}}.
+\end{aligned}
+    \label{eq:D_white_g}
+\end{equation}
+At a repeated eigenvalue, the limiting values of $f$ and $g$ from \eqref{eq:D_rep_JL} and \eqref{eq:D_Sigma_fg} give the
+same result, since $\det\mathbf{A}=a^2$ there. Substituting $f=-1$, $g=-1/\det\mathbf{A}$ and $\cos(\pi\beta/2)=\cos 0=1$ into \eqref{eq:D_Sigma_fg},
+\begin{equation}
+\begin{aligned}
+    \boldsymbol\Sigma
+    &=\frac{\alpha}{2\tr(\mathbf{A})}\Bigl[-\boldsymbol\Sigma_w-\frac{\adj(\mathbf{A})\boldsymbol\Sigma_w\adj(\mathbf{A})^\top}{\det\mathbf{A}}\Bigr]\\
+    &=-\frac{\alpha}{2\tr(\mathbf{A})\det\mathbf{A}}\bigl[\det(\mathbf{A})\,\boldsymbol\Sigma_w+\adj(\mathbf{A})\boldsymbol\Sigma_w\adj(\mathbf{A})^\top\bigr]\\
+    &=\kappa\bigl[\det(\mathbf{A})\,\boldsymbol\Sigma_w+\adj(\mathbf{A})\boldsymbol\Sigma_w\adj(\mathbf{A})^\top\bigr],
+\end{aligned}
+    \label{eq:D_white_Sigma}
+\end{equation}
+where $\kappa:=-\alpha/\bigl(2\tr(\mathbf{A})\det\mathbf{A}\bigr)$. Here, we show that the formula satisfies the Lyapunov equation, 
+\begin{equation}
+\mathbf{A}\boldsymbol\Sigma+\boldsymbol\Sigma\mathbf{A}^\top=-\alpha\boldsymbol\Sigma_w
+\label{eq:D_lyap}    
+\end{equation}
+
+
+Substituting \eqref{eq:D_white_Sigma} into the left-hand side of \eqref{eq:D_lyap_eq}, and using the following four identities
+\begin{equation}
+\begin{aligned}
+    \mathbf{A}\adj(\mathbf{A})&=\det(\mathbf{A})\,\mathbf{I}, &\qquad \adj(\mathbf{A})^\top\mathbf{A}^\top&=\det(\mathbf{A})\,\mathbf{I},\\
+    \mathbf{A}+\adj(\mathbf{A})&=\tr(\mathbf{A})\,\mathbf{I}, &\qquad \mathbf{A}^\top+\adj(\mathbf{A})^\top&=\tr(\mathbf{A})\,\mathbf{I},
+\end{aligned}
+    \label{eq:D_lyap_eq}
+\end{equation}
+which follow from \eqref{eq:D_adj_prod} and \eqref{eq:D_adj} and their transposes, we get
+\begin{equation}
+\begin{aligned}
+    \mathbf{A}\boldsymbol\Sigma+\boldsymbol\Sigma\mathbf{A}^\top
+    &=\mathbf{A}\,\kappa\bigl[\det(\mathbf{A})\boldsymbol\Sigma_w
+      +\adj(\mathbf{A})\boldsymbol\Sigma_w\adj(\mathbf{A})^\top\bigr]\\
+    &\qquad{}+\kappa\bigl[\det(\mathbf{A})\boldsymbol\Sigma_w
+      +\adj(\mathbf{A})\boldsymbol\Sigma_w\adj(\mathbf{A})^\top\bigr]\mathbf{A}^\top\\
+    &=\kappa\det(\mathbf A)\bigl[\mathbf A\boldsymbol\Sigma_w+\boldsymbol\Sigma_w\adj(\mathbf A)^\top
+      +\boldsymbol\Sigma_w\mathbf A^\top+\adj(\mathbf A)\boldsymbol\Sigma_w\bigr]\\
+    &=\kappa\det(\mathbf A)\bigl[(\mathbf A+\adj(\mathbf A))\boldsymbol\Sigma_w
+      +\boldsymbol\Sigma_w(\mathbf A^\top+\adj(\mathbf A)^\top)\bigr]\\
+    &=2\kappa\tr(\mathbf A)\det(\mathbf A)\,\boldsymbol\Sigma_w\\
+    &=2\Bigl(-\frac{\alpha}{2\tr(\mathbf A)\det\mathbf A}\Bigr)
+      \tr(\mathbf A)\det(\mathbf A)\,\boldsymbol\Sigma_w\\
+    &=-\alpha\boldsymbol\Sigma_w.
+\end{aligned}
+    \label{eq:D_lyap_id}
+\end{equation}
+Therefore, the covariance formula \eqref{eq:D_white_Sigma} at $\beta=0$ (white noise) satisfies the Lyapunov equation
+\eqref{eq:D_lyap_eq}.
+
+\end{document}
