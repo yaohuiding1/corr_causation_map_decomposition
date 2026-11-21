@@ -90,4 +90,8 @@ The final combined manuscript is written to `build/corr_causation_map_decomposit
 
 No experimental or simulated datasets are analyzed. The figure-generation code and all LaTeX sources needed to reproduce the manuscript are included in this repository.
 
+## License 
+
+Copyright © 2026 Yaohui Ding. All rights reserved.
+
 
